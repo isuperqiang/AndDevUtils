@@ -1,2 +1,4 @@
-# AndDevUtils
-Android development utils library.
+## AndDevUtils
+
+每个开发者都该有一套自己的工具箱，收集日常开发用到的工具类，为的是能够在项目中快速使用和集成，
+从而缩短开发周期，节约时间成本。
