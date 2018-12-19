@@ -9,6 +9,7 @@ import android.os.Build;
 import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
+import android.webkit.MimeTypeMap;
 
 import java.io.File;
 
@@ -19,6 +20,30 @@ public class FileUtils {
     private FileUtils() {
     }
 
+    /**
+     * 获取文件的 MIME 类型
+     *
+     * @param url
+     * @return
+     */
+    public static String getMimeType(String url) {
+        String type = null;
+        String extension = MimeTypeMap.getFileExtensionFromUrl(url);
+        if (extension != null) {
+            type = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
+        }
+        if (type == null) {
+            type = "*";
+        }
+        return type;
+    }
+
+    /**
+     * 获取外部下载路径
+     *
+     * @param context
+     * @return
+     */
     public static String getExternalDownloadsDir(Context context) {
         File externalFilesDir = context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS);
         if (externalFilesDir == null) {
@@ -27,6 +52,11 @@ public class FileUtils {
         return externalFilesDir.getAbsolutePath();
     }
 
+    /**
+     * 应用外置存储目录
+     * @param context
+     * @return
+     */
     public static File getExternalFileDir(Context context) {
         File filesDir = context.getExternalFilesDir(null);
         if (filesDir == null) {
@@ -55,6 +85,12 @@ public class FileUtils {
         }
     }
 
+    /**
+     * URI 转路径
+     * @param context
+     * @param uri
+     * @return
+     */
     public static String getFilePathByUri(Context context, Uri uri) {
         String path = null;
         // 以 file:// 开头的
