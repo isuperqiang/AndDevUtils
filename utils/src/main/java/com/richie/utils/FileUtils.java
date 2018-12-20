@@ -21,19 +21,21 @@ public class FileUtils {
     }
 
     /**
-     * 获取文件的 MIME 类型
+     * 获取文件的 mime type
      *
      * @param url
-     * @return
+     * @return mime
      */
     public static String getMimeType(String url) {
         String type = null;
         String extension = MimeTypeMap.getFileExtensionFromUrl(url);
+        // extension eg: mp3
         if (extension != null) {
             type = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
         }
+        // type eg: audio/mpeg
         if (type == null) {
-            type = "*";
+            type = "*/*";
         }
         return type;
     }
@@ -54,6 +56,7 @@ public class FileUtils {
 
     /**
      * 应用外置存储目录
+     *
      * @param context
      * @return
      */
@@ -87,6 +90,7 @@ public class FileUtils {
 
     /**
      * URI 转路径
+     *
      * @param context
      * @param uri
      * @return
