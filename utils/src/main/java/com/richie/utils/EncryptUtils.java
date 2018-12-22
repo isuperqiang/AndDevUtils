@@ -5,7 +5,6 @@ import android.util.Base64;
 import com.richie.easylog.ILogger;
 import com.richie.easylog.LoggerFactory;
 
-import java.security.MessageDigest;
 import java.security.SecureRandom;
 
 import javax.crypto.Cipher;
@@ -15,6 +14,7 @@ import javax.crypto.spec.DESKeySpec;
 
 /**
  * @author Richie on 2017.11.10
+ * 加密解密相关
  */
 public class EncryptUtils {
     private static final String DES_TRANSFORMATION = "DES/ECB/PKCS5Padding";
@@ -26,34 +26,6 @@ public class EncryptUtils {
     private static ILogger logger = LoggerFactory.getLogger(EncryptUtils.class);
 
     private EncryptUtils() {
-    }
-
-    /**
-     * md5编码
-     *
-     * @param text 原文
-     * @return 密文
-     */
-    public static String md5Encode(String text) {
-        try {
-            MessageDigest md = MessageDigest.getInstance("MD5");
-            // 加密转换
-            byte[] digest = md.digest(text.getBytes("UTF-8"));
-            StringBuilder sb = new StringBuilder();
-            for (byte b : digest) {
-                // 取低8位 取正
-                int a = b & 0xff;
-                String hexString = Integer.toHexString(a);
-                if (hexString.length() == 1) {
-                    hexString = "0" + hexString;
-                }
-                sb.append(hexString);
-            }
-            return sb.toString();
-        } catch (Exception e) {
-            // ignored
-        }
-        return "";
     }
 
     /**

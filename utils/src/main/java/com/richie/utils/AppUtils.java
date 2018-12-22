@@ -23,10 +23,9 @@ public class AppUtils {
         ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
         if (am != null) {
             List<ActivityManager.RunningAppProcessInfo> runningApps = am.getRunningAppProcesses();
-            if (runningApps == null) {
-                return null;
+            if (runningApps == null || runningApps.size() <= 0) {
+                return "";
             }
-
             for (ActivityManager.RunningAppProcessInfo proInfo : runningApps) {
                 if (proInfo.pid == android.os.Process.myPid()) {
                     if (proInfo.processName != null) {
@@ -54,6 +53,12 @@ public class AppUtils {
         return "1.0.0";
     }
 
+    /**
+     * 获取应用的版本号码
+     *
+     * @param context
+     * @return
+     */
     public static int getVersionCode(Context context) {
         try {
             PackageInfo packageInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);

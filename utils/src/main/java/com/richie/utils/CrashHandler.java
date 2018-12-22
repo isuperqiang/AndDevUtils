@@ -1,9 +1,9 @@
 package com.richie.utils;
 
-import android.app.AlarmManager;
 import android.app.Application;
 import android.content.Context;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.widget.Toast;
 
 import com.richie.easylog.ILogger;
@@ -12,6 +12,7 @@ import com.richie.utils.base.ActivityCallback;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
@@ -27,36 +28,28 @@ import java.util.Map;
  * 崩溃处理
  */
 public class CrashHandler implements Thread.UncaughtExceptionHandler {
-    private static CrashHandler mInstance;
+    private static CrashHandler sInstance;
     private final ILogger logger = LoggerFactory.getLogger(CrashHandler.class);
-    /**
-     * 系统默认UncaughtExceptionHandler
-     */
     private Thread.UncaughtExceptionHandler mDefaultHandler;
-    /**
-     * context
-     */
     private Context mContext;
     private ActivityCallback mCallback;
-
-    /**
-     * 存储异常和参数信息
-     */
 
     private CrashHandler() {
     }
 
-    /**
-     * 获取CrashHandler实例
-     */
     public static CrashHandler getInstance() {
-        if (null == mInstance) {
-            mInstance = new CrashHandler();
+        if (null == sInstance) {
+            sInstance = new CrashHandler();
         }
-        return mInstance;
+        return sInstance;
     }
 
-    public void init(Context context) {
+    /**
+     * 在 Application 里面初始化
+     *
+     * @param context application
+     */
+    public void init(@NonNull Context context) {
         mContext = context;
         mDefaultHandler = Thread.getDefaultUncaughtExceptionHandler();
         //设置该CrashHandler为系统默认的
@@ -76,12 +69,12 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
         } else {
             try {
                 //延迟3秒杀进程
-                Thread.sleep(2000);
+                Thread.sleep(3000);
             } catch (InterruptedException e) {
                 logger.error(e);
             }
             // 3秒后重启
-            AlarmManager mgr = (AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE);
+//            AlarmManager mgr = (AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE);
             //Intent intent = new Intent(mContext, LoginActivity.class);
             //intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             //PendingIntent restartIntent = PendingIntent.getActivity(mContext, 0, intent, PendingIntent.FLAG_ONE_SHOT);
@@ -121,9 +114,6 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
         return true;
     }
 
-    /**
-     * 收集设备参数信息
-     */
     private String collectDeviceInfo() {
         Map<String, String> paramsMap = new LinkedHashMap<>();
         paramsMap.put("imei", DeviceUtils.getIMEI(mContext));
@@ -156,25 +146,19 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
         return sb.toString();
     }
 
-    /**
-     * 保存错误信息到文件中
-     *
-     * @param message
-     */
     private void saveCrashInfo2File(String message) {
         try {
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss", Locale.getDefault());
             String time = format.format(new Date());
             String fileName = "crash_" + time + ".log";
-            String path = FileUtils.getExternalFileDir(mContext).getAbsolutePath();
-            File dir = new File(path, "crash");
-            if (!dir.exists()) {
-                dir.mkdirs();
+            File dir = new File(FileUtils.getExternalFileDir(mContext), "crash");
+            if (FileUtils.createOrExistsDir(dir)) {
+                FileOutputStream fos = new FileOutputStream(new File(dir, fileName));
+                fos.write(message.getBytes());
+                fos.flush();
+                fos.close();
             }
-            FileOutputStream fos = new FileOutputStream(new File(dir, fileName));
-            fos.write(message.getBytes());
-            fos.close();
-        } catch (Exception e) {
+        } catch (IOException e) {
             logger.error(e);
         }
     }

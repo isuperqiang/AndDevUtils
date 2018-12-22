@@ -11,7 +11,13 @@ import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.webkit.MimeTypeMap;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * @author Richie on 2018.04.20
@@ -21,18 +27,140 @@ public class FileUtils {
     }
 
     /**
+     * Return whether it is a directory.
+     *
+     * @param file The file.
+     * @return {@code true}: yes<br>{@code false}: no
+     */
+    public static boolean isDir(final File file) {
+        return file != null && file.exists() && file.isDirectory();
+    }
+
+    /**
+     * Return whether it is a file.
+     *
+     * @param file The file.
+     * @return {@code true}: yes<br>{@code false}: no
+     */
+    public static boolean isFile(final File file) {
+        return file != null && file.exists() && file.isFile();
+    }
+
+    /**
+     * Create a directory if it doesn't exist, otherwise do nothing.
+     *
+     * @param file The file.
+     * @return {@code true}: exists or creates successfully<br>{@code false}: otherwise
+     */
+    public static boolean createOrExistsDir(final File file) {
+        return file != null && (file.exists() ? file.isDirectory() : file.mkdirs());
+    }
+
+    /**
+     * Return whether the file exists.
+     *
+     * @param file The file.
+     * @return {@code true}: yes<br>{@code false}: no
+     */
+    public static boolean isFileExists(final File file) {
+        return file != null && file.exists();
+    }
+
+    /**
+     * 拷贝文件
+     *
+     * @param src
+     * @param dest
+     * @throws IOException
+     */
+    public static void copyFile(File src, File dest) throws IOException {
+        if (!isFile(src) || dest == null) {
+            return;
+        }
+        writeStreamToFile(new FileInputStream(src), dest);
+    }
+
+    /**
+     * 将输入流写入文件
+     *
+     * @param is
+     * @param dest
+     * @throws IOException
+     */
+    public static void writeStreamToFile(InputStream is, File dest) throws IOException {
+        BufferedOutputStream bos = null;
+        try {
+            bos = new BufferedOutputStream(new FileOutputStream(dest));
+            byte[] bytes = new byte[8192];
+            int length;
+            while ((length = is.read(bytes)) != -1) {
+                bos.write(bytes, 0, length);
+            }
+            bos.flush();
+        } finally {
+            if (bos != null) {
+                bos.close();
+            }
+            if (is != null) {
+                is.close();
+            }
+        }
+    }
+
+    /**
+     * 从文件中读取字符串
+     *
+     * @param path
+     * @return
+     * @throws IOException
+     */
+    public static String readStringFromFile(String path) throws IOException {
+        BufferedInputStream bis = null;
+        try {
+            bis = new BufferedInputStream(new FileInputStream(path));
+            byte[] bytes = new byte[bis.available()];
+            bis.read(bytes);
+            return new String(bytes);
+        } finally {
+            if (bis != null) {
+                bis.close();
+            }
+        }
+    }
+
+    /**
+     * 将字符串写入文件
+     *
+     * @param data
+     * @param dest
+     * @throws IOException
+     */
+    public static void writeStringToFile(String data, File dest) throws IOException {
+        if (data == null || dest == null) {
+            return;
+        }
+        BufferedOutputStream bos = null;
+        try {
+            bos = new BufferedOutputStream(new FileOutputStream(dest));
+            bos.write(data.getBytes());
+            bos.flush();
+        } finally {
+            if (bos != null) {
+                bos.close();
+            }
+        }
+    }
+
+    /**
      * 获取文件的 mime type
      *
      * @param url
      * @return mime
      */
     public static String getMimeType(String url) {
-        String type = null;
         String extension = MimeTypeMap.getFileExtensionFromUrl(url);
         // extension eg: mp3
-        if (extension != null) {
-            type = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
-        }
+        String type = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension.toLowerCase());
         // type eg: audio/mpeg
         if (type == null) {
             type = "*/*";
@@ -69,6 +197,20 @@ public class FileUtils {
     }
 
     /**
+     * 应用外置缓存目录
+     *
+     * @param context
+     * @return
+     */
+    public static File getCacheDir(Context context) {
+        File cacheDir = context.getExternalCacheDir();
+        if (cacheDir == null) {
+            cacheDir = context.getCacheDir();
+        }
+        return cacheDir;
+    }
+
+    /**
      * 递归删除文件
      *
      * @param file
@@ -86,6 +228,26 @@ public class FileUtils {
                 file.delete();
             }
         }
+    }
+
+    /**
+     * 外置存储是否可写
+     *
+     * @return
+     */
+    public static boolean isExternalStorageWritable() {
+        String state = Environment.getExternalStorageState();
+        return Environment.MEDIA_MOUNTED.equals(state);
+    }
+
+    /**
+     * 外置存储是否可读
+     *
+     * @return
+     */
+    public static boolean isExternalStorateReadable() {
+        String state = Environment.getExternalStorageState();
+        return Environment.MEDIA_MOUNTED.equals(state) || Environment.MEDIA_MOUNTED_READ_ONLY.equals(state);
     }
 
     /**

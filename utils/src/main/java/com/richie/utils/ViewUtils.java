@@ -21,6 +21,25 @@ public class ViewUtils {
     private ViewUtils() {
     }
 
+    // 两次点击按钮之间的点击间隔不能少于500毫秒
+    public static final int MIN_CLICK_DELAY_TIME = 500;
+    private static long sLastClickTime;
+
+    /**
+     * 判断按钮是否频繁快速点击
+     *
+     * @return
+     */
+    public static boolean isNormalClick() {
+        boolean flag = false;
+        long curClickTime = System.currentTimeMillis();
+        if ((curClickTime - sLastClickTime) >= MIN_CLICK_DELAY_TIME) {
+            sLastClickTime = curClickTime;
+            flag = true;
+        }
+        return flag;
+    }
+
     /**
      * 初始化 RecyclerView
      *

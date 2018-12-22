@@ -11,8 +11,16 @@ import java.io.InputStream;
  */
 public class BitmapUtils {
 
+    /**
+     * 从资源解码位图
+     *
+     * @param res
+     * @param resId
+     * @param reqWidth
+     * @param reqHeight
+     * @return
+     */
     public static Bitmap decodeSampledBitmapFromResource(Resources res, int resId, int reqWidth, int reqHeight) {
-
         // First decode with inJustDecodeBounds=true to check dimensions
         final BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
@@ -26,8 +34,15 @@ public class BitmapUtils {
         return BitmapFactory.decodeResource(res, resId, options);
     }
 
+    /**
+     * 从文件解码位图
+     *
+     * @param pathName
+     * @param reqWidth
+     * @param reqHeight
+     * @return
+     */
     public static Bitmap decodeSampledBitmapFromFile(String pathName, int reqWidth, int reqHeight) {
-
         // First decode with inJustDecodeBounds=true to check dimensions
         final BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
@@ -41,8 +56,15 @@ public class BitmapUtils {
         return BitmapFactory.decodeFile(pathName, options);
     }
 
+    /**
+     * 从流解码位图
+     *
+     * @param is
+     * @param reqWidth
+     * @param reqHeight
+     * @return
+     */
     public static Bitmap decodeSampledBitmapFromStream(InputStream is, int reqWidth, int reqHeight) {
-
         // First decode with inJustDecodeBounds=true to check dimensions
         final BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
@@ -56,9 +78,15 @@ public class BitmapUtils {
         return BitmapFactory.decodeStream(is, null, options);
     }
 
-
+    /**
+     * 从字节数组解码位图
+     *
+     * @param bytes
+     * @param reqWidth
+     * @param reqHeight
+     * @return
+     */
     public static Bitmap decodeSampledBitmapFromByteArray(byte[] bytes, int reqWidth, int reqHeight) {
-
         // First decode with inJustDecodeBounds=true to check dimensions
         final BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
@@ -91,7 +119,6 @@ public class BitmapUtils {
                 inSampleSize *= 2;
             }
         }
-
         return inSampleSize;
     }
 }

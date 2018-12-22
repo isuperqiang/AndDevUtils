@@ -9,6 +9,7 @@ import com.richie.easylog.LoggerFactory;
 
 /**
  * @author Richie on 2017.11.16
+ * 广播接收器
  */
 public abstract class BaseBroadcastReceiver extends BroadcastReceiver {
     /**
