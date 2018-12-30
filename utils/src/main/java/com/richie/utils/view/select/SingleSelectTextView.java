@@ -1,19 +1,24 @@
 package com.richie.utils.view.select;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.support.annotation.Nullable;
+import android.support.v7.widget.AppCompatTextView;
 import android.util.AttributeSet;
-import android.widget.TextView;
+import android.util.Log;
+import android.view.View;
 
 import com.richie.utils.R;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
 /**
  * @author Richie on 2017.10.15
  * 单选 TextView
  */
-@SuppressLint("AppCompatCustomView")
-public class SingleSelectTextView extends TextView implements Selectable {
+public class SingleSelectTextView extends AppCompatTextView implements Selectable {
+    private static final String TAG = "SingleSelectTextView";
     private OnViewSelectListener mOnViewSelectListener;
 
     public SingleSelectTextView(Context context) {
@@ -40,6 +45,35 @@ public class SingleSelectTextView extends TextView implements Selectable {
     @Override
     public void setOnSelectedListener(OnViewSelectListener onViewSelectListener) {
         mOnViewSelectListener = onViewSelectListener;
+    }
+
+    @Override
+    public void setOnClickListener(@Nullable final OnClickListener l) {
+        if (l != null) {
+            try {
+                Class listenerInfoClz = Class.forName("android.view.View$ListenerInfo");
+                Method getListenerInfoM = View.class.getDeclaredMethod("getListenerInfo");
+                getListenerInfoM.setAccessible(true);
+                Object mListenerInfo = getListenerInfoM.invoke(this);
+                Field onClickListenerF = listenerInfoClz.getDeclaredField("mOnClickListener");
+                onClickListenerF.setAccessible(true);
+                final OnClickListener onClickListener = (OnClickListener) onClickListenerF.get(mListenerInfo);
+                if (onClickListener != null) {
+                    super.setOnClickListener(new OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            onClickListener.onClick(v);
+                            l.onClick(v);
+                        }
+                    });
+                } else {
+                    super.setOnClickListener(l);
+                }
+            } catch (Exception e) {
+                Log.e(TAG, "setOnClickListener: ", e);
+                super.setOnClickListener(l);
+            }
+        }
     }
 
     @Override

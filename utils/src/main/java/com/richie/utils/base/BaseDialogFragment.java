@@ -18,11 +18,12 @@ import android.view.WindowManager;
  */
 public abstract class BaseDialogFragment extends DialogFragment {
 
+    @Nullable
     @Override
-    public final View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(getLayoutResID(), container, false);
         initWindowParams();
-        initView();
+        initView(view);
         return view;
     }
 
@@ -53,17 +54,18 @@ public abstract class BaseDialogFragment extends DialogFragment {
     }
 
     /**
-     * 获取布局
+     * 获取布局 ID
      *
-     * @return 布局资源 ID
+     * @return layout resId
      */
     @LayoutRes
     protected abstract int getLayoutResID();
 
     /**
-     * 初始化布局
+     * 初始化视图
+     * @param rootView
      */
-    protected void initView() {
+    protected void initView(View rootView) {
     }
 
     /**
@@ -77,15 +79,4 @@ public abstract class BaseDialogFragment extends DialogFragment {
      */
     protected void release() {
     }
-
-    public interface OnDialogInputListener {
-
-        /**
-         * 对话框输入结果
-         *
-         * @param params
-         */
-        void onDialogInput(Object... params);
-    }
-
 }

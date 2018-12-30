@@ -1,6 +1,9 @@
 package com.richie.utils.view.select;
 
 import android.content.Context;
+import android.os.Parcel;
+import android.os.Parcelable;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,28 +16,37 @@ import com.richie.utils.ViewUtils;
  * 类似 RadioGroup 的单选布局，子 View 选中时高亮
  */
 public class SingleSelectLayout extends RelativeLayout {
-    // NOT SELECTED
-    public static final int NOT_SELECTED = -1;
-    private Selectable.OnViewSelectListener mOnViewSelectListener;
-    private int mSelectedViewId;
+    public static final int NO_SELECTED = -1;
+    private int mSelectedViewId = NO_SELECTED;
+    private ChildViewSelectClickListener mSelectClickListener = new ChildViewSelectClickListener();
 
     public SingleSelectLayout(Context context) {
         super(context);
-        init();
     }
 
     public SingleSelectLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init();
     }
 
     public SingleSelectLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init();
     }
 
-    private void init() {
-        mOnViewSelectListener = new ChildViewSelectedListener();
+    @Nullable
+    @Override
+    protected Parcelable onSaveInstanceState() {
+        Parcelable parcelable = super.onSaveInstanceState();
+        SavedState savedState = new SavedState(parcelable);
+        savedState.state = mSelectedViewId;
+        return savedState;
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Parcelable state) {
+        SavedState savedState = (SavedState) state;
+        super.onRestoreInstanceState(savedState.getSuperState());
+        int selectedViewId = savedState.state;
+        setChildSelected(selectedViewId);
     }
 
     /**
@@ -43,32 +55,18 @@ public class SingleSelectLayout extends RelativeLayout {
      * @param viewId viewId
      */
     public void setChildSelected(int viewId) {
+        if (mSelectedViewId == viewId) {
+            return;
+        }
+        if (mSelectedViewId != NO_SELECTED) {
+            ViewUtils.setViewSelected(findViewById(mSelectedViewId), false);
+        }
+        ViewUtils.setViewSelected(findViewById(viewId), true);
         mSelectedViewId = viewId;
-        int childCount = getChildCount();
-        for (int i = 0; i < childCount; i++) {
-            View view = getChildAt(i);
-            if (view.getId() == viewId) {
-                ViewUtils.setViewSelected(view, true);
-            } else {
-                ViewUtils.setViewSelected(view, false);
-            }
-        }
-    }
-
-    public void setChildEnable(int viewId, boolean enable) {
-        int childCount = getChildCount();
-        for (int i = 0; i < childCount; i++) {
-            View view = getChildAt(i);
-            if (view.getId() == viewId) {
-                ViewUtils.setEnabled(view, enable);
-                //} else {
-                //    ViewUtils.setEnabled(view, !enable);
-            }
-        }
     }
 
     /**
-     * 获取选中的 view ID
+     * 获取选中的 View
      *
      * @return
      */
@@ -79,15 +77,56 @@ public class SingleSelectLayout extends RelativeLayout {
     @Override
     public void addView(View child, int index, ViewGroup.LayoutParams params) {
         if (child instanceof Selectable) {
-            ((Selectable) child).setOnSelectedListener(mOnViewSelectListener);
+            ((Selectable) child).setOnSelectedListener(mSelectClickListener);
+            child.setOnClickListener(mSelectClickListener);
+            if (child.isSelected()) {
+                mSelectedViewId = child.getId();
+            }
         }
         super.addView(child, index, params);
     }
 
-    private class ChildViewSelectedListener implements Selectable.OnViewSelectListener {
+    static class SavedState extends BaseSavedState {
+        public static final Parcelable.Creator<SavedState> CREATOR
+                = new Parcelable.Creator<SavedState>() {
+            @Override
+            public SavedState createFromParcel(Parcel in) {
+                return new SavedState(in);
+            }
+
+            @Override
+            public SavedState[] newArray(int size) {
+                return new SavedState[size];
+            }
+        };
+        int state;
+
+        SavedState(Parcelable superState) {
+            super(superState);
+        }
+
+        private SavedState(Parcel in) {
+            super(in);
+            state = in.readInt();
+        }
+
+        @Override
+        public void writeToParcel(Parcel out, int flags) {
+            super.writeToParcel(out, flags);
+            out.writeInt(state);
+        }
+    }
+
+    private class ChildViewSelectClickListener implements Selectable.OnViewSelectListener, OnClickListener {
+
         @Override
         public void onViewSelected(int id) {
             setChildSelected(id);
+        }
+
+        @Override
+        public void onClick(View v) {
+            setChildSelected(v.getId());
         }
     }
 
