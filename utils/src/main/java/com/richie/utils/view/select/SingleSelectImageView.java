@@ -3,7 +3,7 @@ package com.richie.utils.view.select;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.AppCompatTextView;
+import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -14,21 +14,21 @@ import java.lang.reflect.Method;
 
 /**
  * @author Richie on 2017.10.15
- * 单选 TextView
+ * 单选 ImageView
  */
-public class SingleSelectTextView extends AppCompatTextView implements Selectable {
+public class SingleSelectImageView extends AppCompatImageView implements Selectable {
     private OnViewSelectListener mOnViewSelectListener;
 
-    public SingleSelectTextView(Context context) {
+    public SingleSelectImageView(Context context) {
         super(context);
     }
 
-    public SingleSelectTextView(Context context, AttributeSet attrs) {
+    public SingleSelectImageView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(context, attrs);
     }
 
-    public SingleSelectTextView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public SingleSelectImageView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(context, attrs);
     }
