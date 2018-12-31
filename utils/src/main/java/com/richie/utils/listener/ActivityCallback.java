@@ -1,4 +1,4 @@
-package com.richie.utils.base;
+package com.richie.utils.listener;
 
 import android.app.Activity;
 import android.app.Application;

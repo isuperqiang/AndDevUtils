@@ -8,7 +8,7 @@ import android.widget.Toast;
 
 import com.richie.easylog.ILogger;
 import com.richie.easylog.LoggerFactory;
-import com.richie.utils.base.ActivityCallback;
+import com.richie.utils.listener.ActivityCallback;
 
 import java.io.File;
 import java.io.FileOutputStream;
