@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
-import android.text.TextUtils;
 import android.webkit.MimeTypeMap;
 
 import java.io.BufferedOutputStream;
@@ -37,8 +36,8 @@ public class OkHttpUtils {
     private static final String DOWNLOAD_FAILURE_MESSAGE = "文件下载失败";
     private static final String RESPONSE_FAILURE_MESSAGE = "响应错误 ";
     private static final String UPLOAD_FAILURE_MESSAGE = "文件上传失败 ";
-    private static final int TIMEOUT = 30;
     private OkHttpClient mOkHttpClient;
+    private static final int TIMEOUT = 30;
     private Handler mMainHandler = new Handler(Looper.getMainLooper());
     private Context mContext;
 
@@ -395,7 +394,7 @@ public class OkHttpUtils {
     }
 
     /**
-     * 根据 tag 取消请求
+     * 根据 tag 取消请求，默认情况下，tag 就是 url
      *
      * @param tag
      */
@@ -427,20 +426,18 @@ public class OkHttpUtils {
 
     @NonNull
     private Request buildGetRequest(@NonNull String url) {
-        Request.Builder build = new Request.Builder()
+        return new Request.Builder()
                 .get()
                 .url(url)
-                .tag(url);
-        return setHeaders(build).build();
+                .build();
     }
 
     @NonNull
     private Request buildPostRequest(@NonNull String url, RequestBody fileBody) {
-        Request.Builder build = new Request.Builder()
+        return new Request.Builder()
                 .post(fileBody)
                 .url(url)
-                .tag(url);
-        return setHeaders(build).build();
+                .build();
     }
 
     @NonNull
@@ -453,23 +450,10 @@ public class OkHttpUtils {
             }
         }
         RequestBody formBody = builder.build();
-        Request.Builder build = new Request.Builder()
+        return new Request.Builder()
                 .post(formBody)
                 .url(url)
-                .tag(url);
-        return setHeaders(build).build();
-    }
-
-    private Request.Builder setHeaders(Request.Builder builder) {
-        String acceptLanguage = HttpUtils.getAcceptLanguage();
-        if (!TextUtils.isEmpty(acceptLanguage)) {
-            builder.addHeader(HttpUtils.HEAD_KEY_ACCEPT_LANGUAGE, acceptLanguage);
-        }
-        String userAgent = HttpUtils.getUserAgent();
-        if (!TextUtils.isEmpty(userAgent)) {
-            builder.addHeader(HttpUtils.HEAD_KEY_USER_AGENT, userAgent);
-        }
-        return builder;
+                .build();
     }
 
     private void newStringCall(@NonNull final OkHttpCallback<String> callback, Request request) {
@@ -573,21 +557,11 @@ public class OkHttpUtils {
     }
 
     private void runOnUiThread(Runnable runnable) {
-        if (Thread.currentThread().getId() == mMainHandler.getLooper().getThread().getId()) {
+        if (Thread.currentThread() == mMainHandler.getLooper().getThread()) {
             runnable.run();
         } else {
             mMainHandler.post(runnable);
         }
-    }
-
-    private <T> void onResponseFailure(final Response response, @NonNull final OkHttpCallback<T> callback) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                callback.onFailure(RESPONSE_FAILURE_MESSAGE + response.code() + ":" + response.message());
-                callback.onFinish();
-            }
-        });
     }
 
     public void init(@NonNull Context context, boolean debug) {
@@ -597,6 +571,7 @@ public class OkHttpUtils {
                 .connectTimeout(TIMEOUT, TimeUnit.SECONDS)
                 .readTimeout(TIMEOUT, TimeUnit.SECONDS)
                 .writeTimeout(TIMEOUT * 5, TimeUnit.SECONDS);
+        builder.addInterceptor(new HeaderInterceptor());
         if (debug) {
             HttpLogInterceptor httpLogInterceptor = new HttpLogInterceptor();
             httpLogInterceptor.setPrintLevel(HttpLogInterceptor.Level.BODY);
@@ -606,10 +581,6 @@ public class OkHttpUtils {
         builder.sslSocketFactory(sslParams.sSLSocketFactory, sslParams.trustManager);
         builder.hostnameVerifier(HttpsUtils.UnSafeHostnameVerifier);
         mOkHttpClient = builder.build();
-    }
-
-    public Context getContext() {
-        return mContext;
     }
 
     private static class OkHttpUtilsHolder {
@@ -644,6 +615,16 @@ public class OkHttpUtils {
         }
     }
 
+    private <T> void onResponseFailure(final Response response, @NonNull final OkHttpCallback<T> callback) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                callback.onFailure(RESPONSE_FAILURE_MESSAGE + response.code() + ":" + response.message());
+                callback.onFinish();
+            }
+        });
+    }
+
     public abstract static class ProgressOkHttpCallback extends OkHttpCallback<File> {
         /**
          * 进度
@@ -652,5 +633,9 @@ public class OkHttpUtils {
          * @param total
          */
         protected abstract void onProgress(long current, long total);
+    }
+
+    public Context getContext() {
+        return mContext;
     }
 }
