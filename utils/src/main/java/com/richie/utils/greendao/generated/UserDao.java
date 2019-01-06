@@ -20,29 +20,27 @@ public class UserDao extends AbstractDao<User, Long> {
 
     public static final String TABLENAME = "user";
 
-    public UserDao(DaoConfig config) {
-        super(config);
-    }
-
-
-    public UserDao(DaoConfig config, DaoSession daoSession) {
-        super(config, daoSession);
-    }
-
     /**
      * Creates the underlying database table.
      */
     public static void createTable(Database db, boolean ifNotExists) {
-        String constraint = ifNotExists ? "IF NOT EXISTS " : "";
+        String constraint = ifNotExists ? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"user\" (" + //
                 "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL ," + // 0: id
                 "\"name\" TEXT," + // 1: name
                 "\"age\" INTEGER NOT NULL );"); // 2: age
     }
 
-    /**
-     * Drops the underlying database table.
-     */
+
+    public UserDao(DaoConfig config) {
+        super(config);
+    }
+
+    public UserDao(DaoConfig config, DaoSession daoSession) {
+        super(config, daoSession);
+    }
+
+    /** Drops the underlying database table. */
     public static void dropTable(Database db, boolean ifExists) {
         String sql = "DROP TABLE " + (ifExists ? "IF EXISTS " : "") + "\"user\"";
         db.execSQL(sql);
@@ -92,14 +90,8 @@ public class UserDao extends AbstractDao<User, Long> {
         entity.setId(cursor.getLong(offset + 0));
         entity.setName(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
         entity.setAge(cursor.getInt(offset + 2));
-    }
-
-    @Override
-    protected final Long updateKeyAfterInsert(User entity, long rowId) {
-        entity.setId(rowId);
-        return rowId;
-    }
-
+     }
+     
     @Override
     public Long getKey(User entity) {
         if (entity != null) {
@@ -110,13 +102,9 @@ public class UserDao extends AbstractDao<User, Long> {
     }
 
     @Override
-    public boolean hasKey(User entity) {
-        throw new UnsupportedOperationException("Unsupported for entities with a non-null key");
-    }
-
-    @Override
-    protected final boolean isEntityUpdateable() {
-        return true;
+    protected final Long updateKeyAfterInsert(User entity, long rowId) {
+        entity.setId(rowId);
+        return rowId;
     }
 
     /**
@@ -129,4 +117,14 @@ public class UserDao extends AbstractDao<User, Long> {
         public final static Property Age = new Property(2, int.class, "age", false, "age");
     }
 
+    @Override
+    public boolean hasKey(User entity) {
+        throw new UnsupportedOperationException("Unsupported for entities with a non-null key");
+    }
+
+    @Override
+    protected final boolean isEntityUpdateable() {
+        return true;
+    }
+    
 }

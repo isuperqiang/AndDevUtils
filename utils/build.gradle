@@ -31,7 +31,7 @@ android {
 
 greendao {
     schemaVersion 1 // 数据库版本号
-    daoPackage 'com.richie.utils.greendao.gen'// 设置 DaoMaster、DaoSession、Dao 包名
+    daoPackage 'com.richie.utils.greendao.generated'// 设置 DaoMaster、DaoSession、Dao 包名
     targetGenDir 'src/main/java'// 设置DaoMaster、DaoSession、Dao目录
 }
 
@@ -42,5 +42,6 @@ dependencies {
     implementation 'org.greenrobot:eventbus:3.1.1'
     implementation 'com.github.isuperqiang:AndEasyLog:1.5.8'
     implementation 'com.squareup.okhttp3:okhttp:3.12.0'
+    implementation 'com.google.code.gson:gson:2.8.5'
     implementation 'org.greenrobot:greendao:3.2.2'
 }

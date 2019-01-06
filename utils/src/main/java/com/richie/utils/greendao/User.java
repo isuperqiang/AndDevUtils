@@ -8,6 +8,7 @@ import org.greenrobot.greendao.annotation.Transient;
 
 /**
  * @author Richie on 2018.12.02
+ * 测试用例
  */
 @Entity(nameInDb = "user")
 public class User {
