@@ -10,6 +10,7 @@ import android.view.View;
 import com.richie.utils.R;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /**
@@ -45,17 +46,21 @@ public class SingleSelectImageView extends AppCompatImageView implements Selecta
         mOnViewSelectListener = onViewSelectListener;
     }
 
+    private OnClickListener getOnClickListener() throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, NoSuchFieldException {
+        Class listenerInfoClz = Class.forName("android.view.View$ListenerInfo");
+        Method getListenerInfoM = View.class.getDeclaredMethod("getListenerInfo");
+        getListenerInfoM.setAccessible(true);
+        Object mListenerInfo = getListenerInfoM.invoke(this);
+        Field onClickListenerF = listenerInfoClz.getDeclaredField("mOnClickListener");
+        onClickListenerF.setAccessible(true);
+        return (OnClickListener) onClickListenerF.get(mListenerInfo);
+    }
+
     @Override
     public void setOnClickListener(@Nullable final OnClickListener l) {
         if (l != null) {
             try {
-                Class listenerInfoClz = Class.forName("android.view.View$ListenerInfo");
-                Method getListenerInfoM = View.class.getDeclaredMethod("getListenerInfo");
-                getListenerInfoM.setAccessible(true);
-                Object mListenerInfo = getListenerInfoM.invoke(this);
-                Field onClickListenerF = listenerInfoClz.getDeclaredField("mOnClickListener");
-                onClickListenerF.setAccessible(true);
-                final OnClickListener onClickListener = (OnClickListener) onClickListenerF.get(mListenerInfo);
+                final OnClickListener onClickListener = getOnClickListener();
                 if (onClickListener != null) {
                     super.setOnClickListener(new OnClickListener() {
                         @Override
