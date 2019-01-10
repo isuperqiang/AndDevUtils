@@ -1,15 +1,10 @@
 package com.richie.utils;
 
 import android.os.Handler;
-import android.os.HandlerThread;
 import android.os.Looper;
-
-import com.richie.easylog.ILogger;
-import com.richie.easylog.LoggerFactory;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadFactory;
@@ -22,102 +17,109 @@ import java.util.concurrent.atomic.AtomicInteger;
  * 多线程工具类
  */
 public class ThreadHelper {
-    private final ILogger log = LoggerFactory.getLogger(ThreadHelper.class);
-    private ExecutorService mExecutorService;
-    private Handler mMainHandler;
-    private Handler mWorkHandler;
+    private Handler mMainHandler = new Handler(Looper.getMainLooper());
+    private ThreadPoolExecutor mExecutorService;
 
     private ThreadHelper() {
-        mMainHandler = new Handler(Looper.getMainLooper());
+        // copy from AsyncTask THREAD_POOL_EXECUTOR
         ThreadFactory threadFactory = new ThreadFactory() {
             private final AtomicInteger mCount = new AtomicInteger(1);
 
             @Override
             public Thread newThread(Runnable r) {
-                return new Thread(r, "ThreadHelper#" + mCount.getAndIncrement());
+                return new Thread(r, "AsyncTask #" + mCount.getAndIncrement());
             }
         };
         int cpuCount = Runtime.getRuntime().availableProcessors();
         int corePoolSize = Math.max(2, Math.min(cpuCount - 1, 4));
         int maxPoolSize = cpuCount * 2 + 1;
-        BlockingQueue<Runnable> queue = new LinkedBlockingQueue<>(64);
-        mExecutorService = new ThreadPoolExecutor(corePoolSize, maxPoolSize, 10, TimeUnit.SECONDS, queue, threadFactory);
+        BlockingQueue<Runnable> blockingQueue = new LinkedBlockingQueue<>(128);
+        mExecutorService = new ThreadPoolExecutor(corePoolSize, maxPoolSize, 30, TimeUnit.SECONDS, blockingQueue, threadFactory);
+        mExecutorService.allowCoreThreadTimeOut(true);
     }
 
     public static ThreadHelper getInstance() {
-        return ThreadHelperHolder.instance;
+        return ThreadHelperHolder.INSTANCE;
     }
 
-    private synchronized void ensureSubHandler() {
-        if (mWorkHandler == null) {
-            HandlerThread workerThread = new HandlerThread("WorkHandler");
-            workerThread.start();
-            mWorkHandler = new Handler(workerThread.getLooper());
+    /**
+     * 有返回值的异步任务，主线程回调事件
+     *
+     * @param callable
+     * @param callback
+     */
+    public <T> void enqueue(final Callable<T> callable, final Callback callback) {
+        if (callable != null) {
+            mExecutorService.execute(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        if (callback != null) {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    callback.onStart();
+                                }
+                            });
+                        }
+                        Future<T> future = mExecutorService.submit(callable);
+                        T t = future.get();
+                        if (callback != null) {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    callback.onSuccess(t);
+                                }
+                            });
+                        }
+                    } catch (final Throwable throwable) {
+                        if (callback != null) {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    callback.onFailure(throwable);
+                                }
+                            });
+                        }
+                    } finally {
+                        if (callback != null) {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    callback.onFinish();
+                                }
+                            });
+                        }
+                    }
+                }
+            });
         }
     }
 
     /**
-     * 无返回值的异步任务，使用线程池
+     * 无返回值的异步任务
      *
      * @param r
      */
     public void execute(Runnable r) {
-        try {
+        if (r != null) {
             mExecutorService.execute(r);
-        } catch (Throwable e) {
-            log.error(e);
         }
     }
 
     /**
-     * 有返回值的异步任务，使用线程池
+     * 有返回值的异步任务
      *
      * @param task
      * @param <T>
      * @return
      */
     public <T> Future<T> submit(Callable<T> task) {
-        try {
+        if (task != null) {
             return mExecutorService.submit(task);
-        } catch (Throwable e) {
-            log.error(e);
+        } else {
+            return null;
         }
-        return null;
-    }
-
-    /**
-     * 异步任务，使用 HandlerThread
-     *
-     * @param r
-     * @return
-     */
-    public boolean runOnHandlerThread(Runnable r) {
-        ensureSubHandler();
-        return mWorkHandler.post(r);
-    }
-
-    /**
-     * 异步延时任务，使用 HandlerThread
-     *
-     * @param r
-     * @param delayMillis
-     * @return
-     */
-    public boolean postDelayed(Runnable r, long delayMillis) {
-        ensureSubHandler();
-        return mWorkHandler.postDelayed(r, delayMillis);
-    }
-
-    /**
-     * 异步定时任务，使用 HandlerThread
-     *
-     * @param r
-     * @param uptimeMillis
-     * @return
-     */
-    public boolean postAtTime(Runnable r, long uptimeMillis) {
-        ensureSubHandler();
-        return mWorkHandler.postAtTime(r, uptimeMillis);
     }
 
     /**
@@ -126,10 +128,12 @@ public class ThreadHelper {
      * @param r
      */
     public void runOnUiThread(Runnable r) {
-        if (Thread.currentThread() == Looper.getMainLooper().getThread()) {
-            r.run();
-        } else {
-            mMainHandler.post(r);
+        if (r != null) {
+            if (Thread.currentThread() == Looper.getMainLooper().getThread()) {
+                r.run();
+            } else {
+                mMainHandler.post(r);
+            }
         }
     }
 
@@ -141,7 +145,11 @@ public class ThreadHelper {
      * @return
      */
     public boolean runOnUiPostDelayed(Runnable r, long delay) {
-        return mMainHandler.postDelayed(r, delay);
+        if (r != null) {
+            return mMainHandler.postDelayed(r, delay);
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -152,7 +160,11 @@ public class ThreadHelper {
      * @return
      */
     public boolean runOnUiPostAtTime(Runnable r, long uptimeMillis) {
-        return mMainHandler.postAtTime(r, uptimeMillis);
+        if (r != null) {
+            return mMainHandler.postAtTime(r, uptimeMillis);
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -161,34 +173,37 @@ public class ThreadHelper {
      * @param r
      */
     public void removeUiCallbacks(Runnable r) {
-        mMainHandler.removeCallbacks(r);
-    }
-
-    /**
-     * 移除异步线程的任务
-     *
-     * @param r
-     */
-    public void removeCallbacks(Runnable r) {
-        if (mWorkHandler != null) {
-            mWorkHandler.removeCallbacks(r);
+        if (r != null) {
+            mMainHandler.removeCallbacks(r);
         }
     }
 
     /**
-     * 结束线程池
+     * 移除主线程所有任务
      */
-    public void shutdown() {
-        if (!mExecutorService.isShutdown()) {
-            mExecutorService.shutdown();
+    public void removeUiAllTasks() {
+        mMainHandler.removeCallbacksAndMessages(null);
+    }
+
+    /**
+     * 主线程的回调
+     */
+    public static abstract class Callback {
+        protected void onStart() {
         }
-        if (mWorkHandler != null) {
-            mWorkHandler.getLooper().quitSafely();
+
+        protected void onFinish() {
+        }
+
+        protected void onSuccess(Object result) {
+        }
+
+        protected void onFailure(Throwable throwable) {
         }
     }
 
     private static class ThreadHelperHolder {
-        private static ThreadHelper instance = new ThreadHelper();
+        private static final ThreadHelper INSTANCE = new ThreadHelper();
     }
 
 }

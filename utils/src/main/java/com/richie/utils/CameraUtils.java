@@ -32,15 +32,18 @@ import java.util.List;
  * Camera-related utility functions.
  */
 public class CameraUtils {
-    public static final int CAMERA_MODE_16_9 = 1;
-    public static final int CAMERA_MODE_4_3 = 2;
+    private static final int CAMERA_MODE_16_9 = 1;
+    private static final int CAMERA_MODE_4_3 = 2;
     public static final int CAMERA_MODE_1_1 = 3;
-    public static final int CAMERA_16_9_WIDTH = 1280;
-    public static final int CAMERA_16_9_HEIGHT = 720;
-    public static final int CAMERA_4_3_WIDTH = 1440;
-    public static final int CAMERA_4_3_HEIGHT = 1080;
+    private static final int CAMERA_16_9_WIDTH = 1280;
+    private static final int CAMERA_16_9_HEIGHT = 720;
+    private static final int CAMERA_4_3_WIDTH = 1440;
+    private static final int CAMERA_4_3_HEIGHT = 1080;
     private static final String TAG = CameraUtils.class.getSimpleName();
     private static final boolean DEBUG = false;
+
+    private CameraUtils() {
+    }
 
     public static int getCameraOrientation(int cameraId) {
         Camera.CameraInfo info = new Camera.CameraInfo();

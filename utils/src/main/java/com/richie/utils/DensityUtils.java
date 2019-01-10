@@ -1,7 +1,6 @@
 package com.richie.utils;
 
 import android.content.Context;
-import android.view.View;
 
 /**
  * @author Richie
@@ -9,13 +8,7 @@ import android.view.View;
  */
 public class DensityUtils {
 
-    /**
-     * 动态生成绑定到 View 上的 id
-     *
-     * @return
-     */
-    public static int generateViewId() {
-        return View.generateViewId();
+    private DensityUtils() {
     }
 
     /**

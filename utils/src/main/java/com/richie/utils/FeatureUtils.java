@@ -13,6 +13,7 @@ import java.util.UUID;
  * 获取特征值
  */
 public class FeatureUtils {
+
     private FeatureUtils() {
     }
 

@@ -23,6 +23,7 @@ import java.io.InputStream;
  * @author Richie on 2018.04.20
  */
 public class FileUtils {
+
     private FileUtils() {
     }
 

@@ -98,12 +98,12 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
             return false;
         }
         // 在有 looper 的线程里面 toast
-        ThreadHelper.getInstance().postDelayed(new Runnable() {
+        ThreadHelper.getInstance().runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 Toast.makeText(mContext, "哎呀，系统出了点小问题\n请重新打开试试吧", Toast.LENGTH_LONG).show();
             }
-        }, 0);
+        });
 
         String deviceInfo = collectDeviceInfo();
         String exceptionString = getExceptionString(ex);

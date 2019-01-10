@@ -10,6 +10,7 @@ import java.util.List;
  * @author Richie on 2017.11.08
  */
 public class AppUtils {
+
     private AppUtils() {
     }
 

@@ -11,6 +11,9 @@ import java.io.InputStream;
  */
 public class BitmapUtils {
 
+    private BitmapUtils() {
+    }
+
     /**
      * 从资源解码位图
      *
