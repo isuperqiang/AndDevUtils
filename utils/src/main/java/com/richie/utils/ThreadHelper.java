@@ -7,11 +7,11 @@ import android.os.Looper;
 import com.richie.easylog.ILogger;
 import com.richie.easylog.LoggerFactory;
 
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -23,8 +23,8 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class ThreadHelper {
     private final ILogger log = LoggerFactory.getLogger(ThreadHelper.class);
-    private Handler mMainHandler;
     private ExecutorService mExecutorService;
+    private Handler mMainHandler;
     private Handler mWorkHandler;
 
     private ThreadHelper() {
@@ -34,13 +34,13 @@ public class ThreadHelper {
 
             @Override
             public Thread newThread(Runnable r) {
-                return new Thread(r, "ThreadHelper #".concat(String.valueOf(mCount.getAndIncrement())));
+                return new Thread(r, "ThreadHelper#" + mCount.getAndIncrement());
             }
         };
         int cpuCount = Runtime.getRuntime().availableProcessors();
-        int corePoolSize = cpuCount + 1;
+        int corePoolSize = Math.max(2, Math.min(cpuCount - 1, 4));
         int maxPoolSize = cpuCount * 2 + 1;
-        BlockingQueue<Runnable> queue = new ArrayBlockingQueue<>(128);
+        BlockingQueue<Runnable> queue = new LinkedBlockingQueue<>(64);
         mExecutorService = new ThreadPoolExecutor(corePoolSize, maxPoolSize, 10, TimeUnit.SECONDS, queue, threadFactory);
     }
 
@@ -50,9 +50,9 @@ public class ThreadHelper {
 
     private synchronized void ensureSubHandler() {
         if (mWorkHandler == null) {
-            HandlerThread handlerThread = new HandlerThread("WorkHandler");
-            handlerThread.start();
-            mWorkHandler = new Handler(handlerThread.getLooper());
+            HandlerThread workerThread = new HandlerThread("WorkHandler");
+            workerThread.start();
+            mWorkHandler = new Handler(workerThread.getLooper());
         }
     }
 
@@ -93,9 +93,7 @@ public class ThreadHelper {
      */
     public boolean runOnHandlerThread(Runnable r) {
         ensureSubHandler();
-        boolean post = mWorkHandler.post(r);
-        log.debug("runOnHandlerThread:{}, {}", r, post);
-        return post;
+        return mWorkHandler.post(r);
     }
 
     /**
