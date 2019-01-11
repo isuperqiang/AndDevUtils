@@ -63,7 +63,7 @@ public class ThreadHelper {
                             });
                         }
                         Future<T> future = mExecutorService.submit(callable);
-                        T t = future.get();
+                        final T t = future.get();
                         if (callback != null) {
                             runOnUiThread(new Runnable() {
                                 @Override
