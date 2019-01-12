@@ -5,6 +5,7 @@ import android.os.Looper;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadFactory;
@@ -18,7 +19,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class ThreadHelper {
     private Handler mMainHandler = new Handler(Looper.getMainLooper());
-    private ThreadPoolExecutor mExecutorService;
+    private ThreadPoolExecutor mThreadPoolExecutor;
 
     private ThreadHelper() {
         // copy from AsyncTask THREAD_POOL_EXECUTOR
@@ -34,8 +35,8 @@ public class ThreadHelper {
         int corePoolSize = Math.max(2, Math.min(cpuCount - 1, 4));
         int maxPoolSize = cpuCount * 2 + 1;
         BlockingQueue<Runnable> blockingQueue = new LinkedBlockingQueue<>(128);
-        mExecutorService = new ThreadPoolExecutor(corePoolSize, maxPoolSize, 30, TimeUnit.SECONDS, blockingQueue, threadFactory);
-        mExecutorService.allowCoreThreadTimeOut(true);
+        mThreadPoolExecutor = new ThreadPoolExecutor(corePoolSize, maxPoolSize, 30, TimeUnit.SECONDS, blockingQueue, threadFactory);
+        mThreadPoolExecutor.allowCoreThreadTimeOut(true);
     }
 
     public static ThreadHelper getInstance() {
@@ -43,29 +44,31 @@ public class ThreadHelper {
     }
 
     /**
-     * 有返回值的异步任务，主线程回调事件
+     * 有返回值的异步任务，主线程调用并接收回调事件
      *
      * @param callable
      * @param callback
      */
-    public <T> void enqueue(final Callable<T> callable, final Callback callback) {
+    public <T> void enqueueOnUiThread(final Callable<T> callable, final Callback<T> callback) {
         if (callable != null) {
-            mExecutorService.execute(new Runnable() {
+            mThreadPoolExecutor.execute(new Runnable() {
                 @Override
                 public void run() {
                     try {
+                        CountDownLatch countDownLatch = new CountDownLatch(1);
                         if (callback != null) {
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
                                     callback.onStart();
+                                    countDownLatch.countDown();
                                 }
                             });
                         }
-                        Future<T> future = mExecutorService.submit(callable);
-                        T t = future.get();
+                        countDownLatch.await(1000, TimeUnit.MILLISECONDS);
+                        final T t = callable.call();
                         if (callback != null) {
-                            runOnUiThread(new Runnable() {
+                            mMainHandler.post(new Runnable() {
                                 @Override
                                 public void run() {
                                     callback.onSuccess(t);
@@ -74,7 +77,7 @@ public class ThreadHelper {
                         }
                     } catch (final Throwable throwable) {
                         if (callback != null) {
-                            runOnUiThread(new Runnable() {
+                            mMainHandler.post(new Runnable() {
                                 @Override
                                 public void run() {
                                     callback.onFailure(throwable);
@@ -83,12 +86,45 @@ public class ThreadHelper {
                         }
                     } finally {
                         if (callback != null) {
-                            runOnUiThread(new Runnable() {
+                            mMainHandler.post(new Runnable() {
                                 @Override
                                 public void run() {
                                     callback.onFinish();
                                 }
                             });
+                        }
+                    }
+                }
+            });
+        }
+    }
+
+    /**
+     * 有返回值的异步任务，回调在工作线程
+     *
+     * @param callable
+     * @param callback
+     */
+    public <T> void enqueue(final Callable<T> callable, final Callback<T> callback) {
+        if (callable != null) {
+            mThreadPoolExecutor.execute(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        if (callback != null) {
+                            callback.onStart();
+                        }
+                        final T t = callable.call();
+                        if (callback != null) {
+                            callback.onSuccess(t);
+                        }
+                    } catch (final Throwable throwable) {
+                        if (callback != null) {
+                            callback.onFailure(throwable);
+                        }
+                    } finally {
+                        if (callback != null) {
+                            callback.onFinish();
                         }
                     }
                 }
@@ -103,7 +139,7 @@ public class ThreadHelper {
      */
     public void execute(Runnable r) {
         if (r != null) {
-            mExecutorService.execute(r);
+            mThreadPoolExecutor.execute(r);
         }
     }
 
@@ -116,7 +152,7 @@ public class ThreadHelper {
      */
     public <T> Future<T> submit(Callable<T> task) {
         if (task != null) {
-            return mExecutorService.submit(task);
+            return mThreadPoolExecutor.submit(task);
         } else {
             return null;
         }
@@ -187,15 +223,18 @@ public class ThreadHelper {
 
     /**
      * 主线程的回调
+     * 执行顺序：
+     * onStart-->onSuccess-->onFinish
+     * onStart-->onFailure-->onFinish
      */
-    public static abstract class Callback {
+    public static abstract class Callback<T> {
         protected void onStart() {
         }
 
         protected void onFinish() {
         }
 
-        protected void onSuccess(Object result) {
+        protected void onSuccess(T result) {
         }
 
         protected void onFailure(Throwable throwable) {

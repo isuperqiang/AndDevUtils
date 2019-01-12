@@ -13,7 +13,7 @@ public class NetworkUtils {
     }
 
     /**
-     * 判断网络是否连接¬
+     * 判断网络是否连接
      * <p>需添加权限 {@code <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>}</p>
      *
      * @return connected

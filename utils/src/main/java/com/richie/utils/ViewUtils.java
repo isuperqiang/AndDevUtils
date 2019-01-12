@@ -22,7 +22,7 @@ public class ViewUtils {
     }
 
     // 两次点击按钮之间的点击间隔不能少于500毫秒
-    public static final int MIN_CLICK_DELAY_TIME = 500;
+    private static final int MIN_CLICK_DELAY_TIME = 500;
     private static long sLastClickTime;
 
     /**

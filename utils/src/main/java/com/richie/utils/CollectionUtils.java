@@ -12,17 +12,6 @@ public class CollectionUtils {
     }
 
     /**
-     * 判断集合是否为空，不用 isEmpty(), 而用 size()>0
-     *
-     * @param collection
-     * @param <E>
-     * @return true 不为空，false 为空
-     */
-    public static <E> boolean notEmpty(Collection<E> collection) {
-        return collection != null && collection.size() > 0;
-    }
-
-    /**
      * 判断集合是否为空
      *
      * @param collection
@@ -34,7 +23,7 @@ public class CollectionUtils {
     }
 
     public static <E> void clear(Collection<E> collection) {
-        if (notEmpty(collection)) {
+        if (!isEmpty(collection)) {
             try {
                 collection.clear();
             } catch (Exception e) {

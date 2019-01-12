@@ -10,7 +10,7 @@ public abstract class OnMultiClickListener implements View.OnClickListener {
 
     private long mLastClickTime;
     private int mViewId = View.NO_ID;
-    public static final int MIN_CLICK_DELAY_TIME = 500;
+    private static final int MIN_CLICK_DELAY_TIME = 500;
 
     /**
      * 处理后的点击事件
