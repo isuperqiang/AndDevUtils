@@ -44,7 +44,7 @@ public class ThreadHelper {
     }
 
     /**
-     * 有返回值的异步任务，主线程调用并接收回调事件
+     * 有返回值的异步任务，主线程调用并接收回调
      *
      * @param callable
      * @param callback
@@ -57,7 +57,7 @@ public class ThreadHelper {
                     try {
                         CountDownLatch countDownLatch = new CountDownLatch(1);
                         if (callback != null) {
-                            runOnUiThread(new Runnable() {
+                            mMainHandler.post(new Runnable() {
                                 @Override
                                 public void run() {
                                     callback.onStart();
@@ -100,7 +100,7 @@ public class ThreadHelper {
     }
 
     /**
-     * 有返回值的异步任务，回调在工作线程
+     * 有返回值的异步任务，在工作线程回调
      *
      * @param callable
      * @param callback
