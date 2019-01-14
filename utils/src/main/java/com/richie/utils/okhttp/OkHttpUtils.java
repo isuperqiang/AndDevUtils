@@ -26,6 +26,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import okhttp3.logging.HttpLoggingInterceptor;
 
 /**
  * @author Richie on 2018.12.19
@@ -573,9 +574,14 @@ public class OkHttpUtils {
                 .writeTimeout(TIMEOUT * 5, TimeUnit.SECONDS);
         builder.addInterceptor(new HeaderInterceptor());
         if (debug) {
-            HttpLogInterceptor httpLogInterceptor = new HttpLogInterceptor();
-            httpLogInterceptor.setPrintLevel(HttpLogInterceptor.Level.BODY);
-            builder.addInterceptor(httpLogInterceptor);
+            HttpLoggingInterceptor logging = new HttpLoggingInterceptor(new HttpLoggingInterceptor.Logger() {
+                @Override
+                public void log(String message) {
+                    OkLogger.d(message);
+                }
+            });
+            logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+            builder.addInterceptor(logging);
         }
         HttpsUtils.SSLParams sslParams = HttpsUtils.getSslSocketFactory();
         builder.sslSocketFactory(sslParams.sSLSocketFactory, sslParams.trustManager);
