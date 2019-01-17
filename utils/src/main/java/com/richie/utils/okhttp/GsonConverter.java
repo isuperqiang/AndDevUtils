@@ -3,10 +3,13 @@ package com.richie.utils.okhttp;
 import com.google.gson.Gson;
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
+import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 
 import java.io.Reader;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Richie on 2018.12.22
@@ -32,6 +35,12 @@ public class GsonConverter {
 
     public static <T> T fromJson(Reader json, Type typeOfT) throws JsonIOException, JsonSyntaxException {
         return GsonHolder.GSON.fromJson(json, typeOfT);
+    }
+
+    public static <T> List<T> fromJsonList(String json, Class<T> type) {
+        Type listType = new TypeToken<ArrayList<T>>() {
+        }.getType();
+        return GsonHolder.GSON.fromJson(json, listType);
     }
 
     public static String toJson(Object src) {
