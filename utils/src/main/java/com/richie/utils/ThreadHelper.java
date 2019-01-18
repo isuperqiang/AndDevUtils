@@ -55,7 +55,7 @@ public class ThreadHelper {
                 @Override
                 public void run() {
                     try {
-                        CountDownLatch countDownLatch = new CountDownLatch(1);
+                        final CountDownLatch countDownLatch = new CountDownLatch(1);
                         if (callback != null) {
                             mMainHandler.post(new Runnable() {
                                 @Override
