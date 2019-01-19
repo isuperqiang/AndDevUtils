@@ -1,58 +1,82 @@
 package com.richie.utils.okhttp;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonIOException;
-import com.google.gson.JsonSyntaxException;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
-import com.google.gson.stream.JsonReader;
 
-import java.io.Reader;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Richie on 2018.12.22
  * JSON 转换器
  */
 public class GsonConverter {
+    private final static Gson GSON = new Gson();
 
-    public static <T> T fromJson(String json, Class<T> type) throws JsonIOException, JsonSyntaxException {
-        return GsonHolder.GSON.fromJson(json, type);
+    /**
+     * json to bean
+     *
+     * @param json     must be JSONObject
+     * @param classOfT
+     * @param <T>
+     * @return
+     */
+    public static <T> T jsonToBean(String json, Class<T> classOfT) {
+        return GSON.fromJson(json, classOfT);
     }
 
-    public static <T> T fromJson(String json, Type type) {
-        return GsonHolder.GSON.fromJson(json, type);
+    /**
+     * json to bean list, without generic erase problem, recommend
+     *
+     * @param json     must be JSONArray
+     * @param classOfT
+     * @param <T>
+     * @return
+     */
+    public static <T> List<T> jsonToList(String json, Class<T> classOfT) {
+        JsonArray array = new JsonParser().parse(json).getAsJsonArray();
+        List<T> list = new ArrayList<>(array.size());
+        for (JsonElement elem : array) {
+            T t = GSON.fromJson(elem, classOfT);
+            list.add(t);
+        }
+        return list;
     }
 
-    public static <T> T fromJson(JsonReader reader, Type typeOfT) throws JsonIOException, JsonSyntaxException {
-        return GsonHolder.GSON.fromJson(reader, typeOfT);
+    /**
+     * json to map
+     *
+     * @param json must be JSONObject
+     * @return
+     */
+    public static <T> Map<String, T> jsonToMap(String json) {
+        return GSON.fromJson(json, new TypeToken<Map<String, T>>() {
+        }.getType());
     }
 
-    public static <T> T fromJson(Reader json, Class<T> classOfT) throws JsonSyntaxException, JsonIOException {
-        return GsonHolder.GSON.fromJson(json, classOfT);
+    /**
+     * json to bean list containing map
+     *
+     * @param json must be JSONObject
+     * @return
+     */
+    public static <T> List<Map<String, T>> jsonToMapList(String json) {
+        return GSON.fromJson(json, new TypeToken<List<Map<String, T>>>() {
+        }.getType());
     }
 
-    public static <T> T fromJson(Reader json, Type typeOfT) throws JsonIOException, JsonSyntaxException {
-        return GsonHolder.GSON.fromJson(json, typeOfT);
-    }
-
-    public static <T> List<T> fromJsonList(String json, Class<T> type) {
-        Type listType = new TypeToken<ArrayList<T>>() {
-        }.getType();
-        return GsonHolder.GSON.fromJson(json, listType);
-    }
-
-    public static String toJson(Object src) {
-        return GsonHolder.GSON.toJson(src);
-    }
-
-    public static String toJson(Object src, Type typeOfSrc) {
-        return GsonHolder.GSON.toJson(src, typeOfSrc);
-    }
-
-    private static class GsonHolder {
-        private final static Gson GSON = new Gson();
+    /**
+     * bean to json
+     *
+     * @param src
+     * @return
+     */
+    public static String objectToJson(Object src) {
+        return GSON.toJson(src);
     }
 
 }

@@ -527,7 +527,7 @@ public class OkHttpUtils {
                                 Type type = callback.getClass().getGenericSuperclass();
                                 Type[] params = ((ParameterizedType) type).getActualTypeArguments();
                                 Class<T> responseClass = (Class<T>) params[0];
-                                final T t = GsonConverter.fromJson(string, responseClass);
+                                final T t = GsonConverter.jsonToBean(string, responseClass);
                                 runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
