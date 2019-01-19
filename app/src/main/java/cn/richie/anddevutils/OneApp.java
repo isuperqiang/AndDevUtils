@@ -1,8 +1,9 @@
-package com.richie.anddevutils;
+package cn.richie.anddevutils;
 
 import android.app.Application;
 import android.content.Context;
 
+import com.richie.anddevutils.BuildConfig;
 import com.richie.utils.UtilsApp;
 
 import me.jessyan.autosize.AutoSizeConfig;

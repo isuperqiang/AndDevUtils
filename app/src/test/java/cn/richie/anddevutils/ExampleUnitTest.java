@@ -1,4 +1,4 @@
-package com.richie.anddevutils;
+package cn.richie.anddevutils;
 
 import com.richie.utils.FeatureUtils;
 
