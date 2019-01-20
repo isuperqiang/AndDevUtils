@@ -203,7 +203,7 @@ public class FileUtils {
      * @param context
      * @return
      */
-    public static File getCacheDir(Context context) {
+    public static File getExternalCacheDir(Context context) {
         File cacheDir = context.getExternalCacheDir();
         if (cacheDir == null) {
             cacheDir = context.getCacheDir();

@@ -128,7 +128,7 @@ public class HttpUtils {
                 Integer resId = (Integer) webUserAgentField.get(null);
                 webUserAgent = OkHttpUtils.getInstance().getContext().getString(resId);
             } catch (Exception e) {
-                // ignored
+                OkLogger.printStackTrace(e);
             }
             if (TextUtils.isEmpty(webUserAgent)) {
                 webUserAgent = "okhttp/square";

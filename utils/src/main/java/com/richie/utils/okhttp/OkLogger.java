@@ -7,16 +7,16 @@ import android.util.Log;
  * OkHttp 日志的工具类
  */
 public class OkLogger {
-    private static boolean isLogEnable = true;
+    private static boolean isEnable = true;
     private static String tag = "OkHttpUtils";
 
     public static void debug(boolean isEnable) {
         debug(tag, isEnable);
     }
 
-    public static void debug(String logTag, boolean isEnable) {
-        tag = logTag;
-        isLogEnable = isEnable;
+    public static void debug(String tag, boolean isEnable) {
+        OkLogger.tag = tag;
+        OkLogger.isEnable = isEnable;
     }
 
     public static void v(String msg) {
@@ -24,7 +24,7 @@ public class OkLogger {
     }
 
     public static void v(String tag, String msg) {
-        if (isLogEnable) {
+        if (isEnable) {
             Log.v(tag, msg);
         }
     }
@@ -34,7 +34,7 @@ public class OkLogger {
     }
 
     public static void d(String tag, String msg) {
-        if (isLogEnable) {
+        if (isEnable) {
             Log.d(tag, msg);
         }
     }
@@ -44,7 +44,7 @@ public class OkLogger {
     }
 
     public static void i(String tag, String msg) {
-        if (isLogEnable) {
+        if (isEnable) {
             Log.i(tag, msg);
         }
     }
@@ -54,7 +54,7 @@ public class OkLogger {
     }
 
     public static void w(String tag, String msg) {
-        if (isLogEnable) {
+        if (isEnable) {
             Log.w(tag, msg);
         }
     }
@@ -64,13 +64,13 @@ public class OkLogger {
     }
 
     public static void e(String tag, String msg) {
-        if (isLogEnable) {
+        if (isEnable) {
             Log.e(tag, msg);
         }
     }
 
     public static void printStackTrace(Throwable t) {
-        if (isLogEnable && t != null) {
+        if (isEnable && t != null) {
             Log.e(tag, "OkHttp error", t);
         }
     }
