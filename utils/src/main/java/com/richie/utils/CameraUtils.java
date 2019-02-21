@@ -87,8 +87,9 @@ public class CameraUtils {
      */
     public static void setFocusModes(Camera.Parameters parameters) {
         List<String> focusModes = parameters.getSupportedFocusModes();
-        if (focusModes.contains(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO))
+        if (focusModes.contains(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO)) {
             parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO);
+        }
     }
 
     /**
@@ -100,8 +101,9 @@ public class CameraUtils {
         int[] bestFramerate = rates.get(0);
         for (int i = 0; i < rates.size(); i++) {
             int[] rate = rates.get(i);
-            if (DEBUG)
+            if (DEBUG) {
                 Log.e(TAG, "supported preview pfs min " + rate[0] + " max " + rate[1]);
+            }
             int curDelta = Math.abs(rate[1] - framerate);
             int bestDelta = Math.abs(bestFramerate[1] - framerate);
             if (curDelta < bestDelta) {
@@ -110,8 +112,9 @@ public class CameraUtils {
                 bestFramerate = bestFramerate[0] < rate[0] ? rate : bestFramerate;
             }
         }
-        if (DEBUG)
+        if (DEBUG) {
             Log.e(TAG, "closet framerate min " + bestFramerate[0] + " max " + bestFramerate[1]);
+        }
         parameters.setPreviewFpsRange(bestFramerate[0], bestFramerate[1]);
     }
 
@@ -144,12 +147,14 @@ public class CameraUtils {
 
     public static String openFlash(Camera camera, String flashMode) {
         try {
-            if (camera == null || TextUtils.isEmpty(flashMode))
+            if (camera == null || TextUtils.isEmpty(flashMode)) {
                 return null;
+            }
             Camera.Parameters parameters = camera.getParameters();
             List<String> flashModes = parameters.getSupportedFlashModes();
-            if (flashModes == null)
+            if (flashModes == null) {
                 return null;
+            }
             for (String fm : flashModes) {
                 if (fm.equals(flashMode)) {
                     parameters.setFlashMode(flashMode);
@@ -158,28 +163,31 @@ public class CameraUtils {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e(TAG, "openFlash: ", e);
         }
         return null;
     }
 
     public static boolean isSupportedFlash(Camera camera) {
         try {
-            if (camera == null)
+            if (camera == null) {
                 return false;
+            }
             Camera.Parameters parameters = camera.getParameters();
             List<String> flashModes = parameters.getSupportedFlashModes();
-            if (flashModes != null && flashModes.contains(Camera.Parameters.FLASH_MODE_TORCH))
+            if (flashModes != null && flashModes.contains(Camera.Parameters.FLASH_MODE_TORCH)) {
                 return true;
+            }
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e(TAG, "isSupportedFlash: ", e);
         }
         return false;
     }
 
     public static void setExposureCompensation(Camera camera, float v) {
-        if (camera == null)
+        if (camera == null) {
             return;
+        }
         Camera.Parameters parameters = camera.getParameters();
         float min = parameters.getMinExposureCompensation();
         float max = parameters.getMaxExposureCompensation();
@@ -188,8 +196,9 @@ public class CameraUtils {
     }
 
     public static float getExposureCompensation(Camera camera) {
-        if (camera == null)
+        if (camera == null) {
             return 0;
+        }
         float progress = camera.getParameters().getExposureCompensation();
         float min = camera.getParameters().getMinExposureCompensation();
         float max = camera.getParameters().getMaxExposureCompensation();
@@ -197,8 +206,9 @@ public class CameraUtils {
     }
 
     public static void handleFocus(Camera camera, float x, float y, int width, int height, int cameraWidth, int cameraHeight) {
-        if (camera == null)
+        if (camera == null) {
             return;
+        }
         try {
             Rect focusRect = calculateTapArea(x / width * cameraWidth, y / height * cameraHeight, cameraWidth, cameraHeight);
             camera.cancelAutoFocus();
@@ -213,12 +223,13 @@ public class CameraUtils {
             final String currentFocusMode = params.getFocusMode();
 
             List<String> supportedFocusModes = params.getSupportedFocusModes();
-            if (supportedFocusModes.contains(Camera.Parameters.FOCUS_MODE_AUTO))
+            if (supportedFocusModes.contains(Camera.Parameters.FOCUS_MODE_AUTO)) {
                 params.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
-            else if (supportedFocusModes.contains(Camera.Parameters.FOCUS_MODE_FIXED))
+            } else if (supportedFocusModes.contains(Camera.Parameters.FOCUS_MODE_FIXED)) {
                 params.setFocusMode(Camera.Parameters.FOCUS_MODE_FIXED);
-            else if (supportedFocusModes.contains(Camera.Parameters.FOCUS_MODE_MACRO))
+            } else if (supportedFocusModes.contains(Camera.Parameters.FOCUS_MODE_MACRO)) {
                 params.setFocusMode(Camera.Parameters.FOCUS_MODE_MACRO);
+            }
 
             camera.setParameters(params);
             camera.autoFocus(new Camera.AutoFocusCallback() {
@@ -231,7 +242,7 @@ public class CameraUtils {
                 }
             });
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e(TAG, "handleFocus: ", e);
         }
     }
 

@@ -22,7 +22,7 @@ public class NetChangeReceiver extends BaseBroadcastReceiver {
     private OnNetChangedListener mOnNetChangedListener;
 
     @Override
-    public void doReceive(Context context, Intent intent) {
+    protected void doReceive(Context context, Intent intent) {
         logger.debug("doReceive:{}", intent != null ? intent.toUri(0) : null);
         if (intent != null) {
             if (ConnectivityManager.CONNECTIVITY_ACTION.equals(intent.getAction())) {

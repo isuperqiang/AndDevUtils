@@ -1,5 +1,8 @@
 package com.richie.utils;
 
+import com.richie.easylog.ILogger;
+import com.richie.easylog.LoggerFactory;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,6 +19,7 @@ import okio.Okio;
  * @author Richie on 2019.02.20
  */
 public class OkioUtils {
+    private static ILogger logger = LoggerFactory.getLogger(OkioUtils.class);
 
     private OkioUtils() {
     }
@@ -33,7 +37,7 @@ public class OkioUtils {
         try (BufferedSource bufferedSource = Okio.buffer(Okio.source(new File(src)))) {
             return bufferedSource.readByteArray();
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error(e);
         }
         return null;
     }
@@ -51,7 +55,7 @@ public class OkioUtils {
         try (BufferedSource bufferedSource = Okio.buffer(Okio.source(is))) {
             return bufferedSource.readByteArray();
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error(e);
         }
         return null;
     }
@@ -69,7 +73,7 @@ public class OkioUtils {
         try (BufferedSource bufferedSource = Okio.buffer(Okio.source(new File(src)))) {
             return bufferedSource.readUtf8();
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error(e);
         }
         return null;
     }
@@ -88,7 +92,7 @@ public class OkioUtils {
             ByteString byteString = ByteString.read(is, is.available());
             return byteString.utf8();
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error(e);
         }
         return null;
     }
@@ -107,7 +111,7 @@ public class OkioUtils {
             bufferedSink.writeUtf8(data);
             return true;
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error(e);
         }
         return false;
     }
@@ -126,7 +130,7 @@ public class OkioUtils {
             bufferedSink.write(data);
             return true;
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error(e);
         }
         return false;
     }
@@ -147,7 +151,7 @@ public class OkioUtils {
             bufferedSink.write(bytes);
             return true;
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error(e);
         }
         return false;
     }
@@ -241,7 +245,7 @@ public class OkioUtils {
             ByteString byteString = buffer.readByteString();
             return byteString.base64();
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error(e);
         }
         return null;
     }
@@ -265,7 +269,7 @@ public class OkioUtils {
         try (ObjectInputStream objectIn = new ObjectInputStream(buffer.inputStream())) {
             return objectIn.readObject();
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e);
         }
         return null;
     }

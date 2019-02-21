@@ -46,5 +46,5 @@ dependencies {
     implementation 'com.squareup.okio:okio:2.2.2'
     implementation 'com.google.code.gson:gson:2.8.5'
     implementation 'org.greenrobot:greendao:3.2.2'
-    implementation 'pub.devrel:easypermissions:2.0.0'
+    implementation 'pub.devrel:easypermissions:2.0.1'
 }

@@ -38,5 +38,5 @@ public abstract class BaseBroadcastReceiver extends BroadcastReceiver {
      * @param context
      * @param intent
      */
-    public abstract void doReceive(Context context, Intent intent);
+    protected abstract void doReceive(Context context, Intent intent);
 }
