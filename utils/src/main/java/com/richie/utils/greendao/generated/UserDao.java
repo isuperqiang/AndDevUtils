@@ -20,15 +20,6 @@ public class UserDao extends AbstractDao<User, Long> {
 
     public static final String TABLENAME = "user";
 
-    public UserDao(DaoConfig config) {
-        super(config);
-    }
-
-
-    public UserDao(DaoConfig config, DaoSession daoSession) {
-        super(config, daoSession);
-    }
-
     /**
      * Creates the underlying database table.
      */
@@ -38,6 +29,23 @@ public class UserDao extends AbstractDao<User, Long> {
                 "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL ," + // 0: id
                 "\"name\" TEXT," + // 1: name
                 "\"age\" INTEGER NOT NULL );"); // 2: age
+    }
+
+
+    public UserDao(DaoConfig config) {
+        super(config);
+    }
+
+    public UserDao(DaoConfig config, DaoSession daoSession) {
+        super(config, daoSession);
+    }
+
+    /**
+     * Drops the underlying database table.
+     */
+    public static void dropTable(Database db, boolean ifExists) {
+        String sql = "DROP TABLE " + (ifExists ? "IF EXISTS " : "") + "\"user\"";
+        db.execSQL(sql);
     }
 
     @Override
@@ -50,14 +58,6 @@ public class UserDao extends AbstractDao<User, Long> {
             stmt.bindString(2, name);
         }
         stmt.bindLong(3, entity.getAge());
-    }
-
-    /**
-     * Drops the underlying database table.
-     */
-    public static void dropTable(Database db, boolean ifExists) {
-        String sql = "DROP TABLE " + (ifExists ? "IF EXISTS " : "") + "\"user\"";
-        db.execSQL(sql);
     }
 
     @Override
@@ -98,17 +98,8 @@ public class UserDao extends AbstractDao<User, Long> {
         entity.setId(cursor.getLong(offset + 0));
         entity.setName(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
         entity.setAge(cursor.getInt(offset + 2));
-     }
-    
-    @Override
-    public Long getKey(User entity) {
-        if(entity != null) {
-            return entity.getId();
-        } else {
-            return null;
-        }
     }
-    
+
     /**
      * Properties of entity User.<br/>
      * Can be used for QueryBuilder and for referencing column names.
@@ -117,6 +108,15 @@ public class UserDao extends AbstractDao<User, Long> {
         public final static Property Id = new Property(0, long.class, "id", true, "_id");
         public final static Property Name = new Property(1, String.class, "name", false, "name");
         public final static Property Age = new Property(2, int.class, "age", false, "age");
+    }
+    
+    @Override
+    public Long getKey(User entity) {
+        if(entity != null) {
+            return entity.getId();
+        } else {
+            return null;
+        }
     }
 
     @Override
