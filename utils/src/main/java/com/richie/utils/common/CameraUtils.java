@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.richie.utils;
+package com.richie.utils.common;
 
 import android.app.Activity;
 import android.graphics.Matrix;
@@ -31,7 +31,7 @@ import java.util.List;
 /**
  * Camera-related utility functions.
  */
-public class CameraUtils {
+public final class CameraUtils {
     private static final int CAMERA_MODE_16_9 = 1;
     private static final int CAMERA_MODE_4_3 = 2;
     public static final int CAMERA_MODE_1_1 = 3;

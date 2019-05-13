@@ -31,15 +31,15 @@ import okhttp3.logging.HttpLoggingInterceptor;
 /**
  * @author Richie on 2018.12.19
  */
-public class OkHttpUtils {
+public final class OkHttpUtils {
     private static final String NETWORK_FAILURE_MESSAGE = "网络访问失败";
     private static final String PARSE_FAILURE_MESSAGE = "数据解析失败";
     private static final String DOWNLOAD_FAILURE_MESSAGE = "文件下载失败";
     private static final String RESPONSE_FAILURE_MESSAGE = "响应错误 ";
     private static final String UPLOAD_FAILURE_MESSAGE = "文件上传失败 ";
+    private Handler mMainHandler = new Handler(Looper.getMainLooper());
     private OkHttpClient mOkHttpClient;
     private static final int TIMEOUT = 30;
-    private Handler mMainHandler = new Handler(Looper.getMainLooper());
     private Context mContext;
 
     private OkHttpUtils() {

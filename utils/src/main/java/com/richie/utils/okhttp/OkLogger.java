@@ -6,7 +6,7 @@ import android.util.Log;
  * @author Richie
  * OkHttp 日志的工具类
  */
-public class OkLogger {
+public final class OkLogger {
     private static boolean isEnable = true;
     private static String tag = "OkHttpUtils";
 

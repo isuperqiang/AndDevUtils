@@ -1,6 +1,6 @@
 package cn.richie.anddevutils;
 
-import com.richie.utils.FeatureUtils;
+import com.richie.utils.common.FeatureUtils;
 
 import org.junit.Test;
 

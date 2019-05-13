@@ -1,4 +1,4 @@
-package com.richie.utils;
+package com.richie.utils.common;
 
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -9,7 +9,7 @@ import java.io.InputStream;
 /**
  * @author Richie on 2018.09.16
  */
-public class BitmapUtils {
+public final class BitmapUtils {
 
     private BitmapUtils() {
     }

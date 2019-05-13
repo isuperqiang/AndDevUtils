@@ -3,8 +3,6 @@ package cn.richie.anddevutils;
 import android.app.Application;
 import android.content.Context;
 
-import com.richie.utils.UtilsApp;
-
 import me.jessyan.autosize.AutoSizeConfig;
 
 /**
@@ -21,7 +19,6 @@ public class OneApp extends Application {
     public void onCreate() {
         super.onCreate();
         sContext = this;
-        UtilsApp.init(this);
         AutoSizeConfig.getInstance().setLog(BuildConfig.DEBUG);
     }
 }

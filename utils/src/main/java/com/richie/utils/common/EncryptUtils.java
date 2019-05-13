@@ -1,9 +1,7 @@
-package com.richie.utils;
+package com.richie.utils.common;
 
 import android.util.Base64;
-
-import com.richie.easylog.ILogger;
-import com.richie.easylog.LoggerFactory;
+import android.util.Log;
 
 import java.security.SecureRandom;
 
@@ -13,17 +11,18 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESKeySpec;
 
 /**
- * @author Richie on 2017.11.10
  * 加密解密相关
+ *
+ * @author Richie on 2017.11.10
  */
-public class EncryptUtils {
+public final class EncryptUtils {
     private static final String DES_TRANSFORMATION = "DES/ECB/PKCS5Padding";
     private static final String ALGORITHM = "DES";
     /**
      * 本地 DES 加密的 key
      */
     private final static byte[] KEY_BYTES = "V4UfmGI0".getBytes();
-    private static ILogger logger = LoggerFactory.getLogger(EncryptUtils.class);
+    private static final String TAG = "EncryptUtils";
 
     private EncryptUtils() {
     }
@@ -61,7 +60,7 @@ public class EncryptUtils {
             cipher.init(Cipher.ENCRYPT_MODE, secretKey, random);
             return cipher.doFinal(content);
         } catch (Exception e) {
-            logger.error(e);
+            Log.e(TAG, "encryptDES: ", e);
         }
         return null;
     }
@@ -99,7 +98,7 @@ public class EncryptUtils {
             cipher.init(Cipher.DECRYPT_MODE, secretKey, random);
             return cipher.doFinal(content);
         } catch (Exception e) {
-            logger.error(e);
+            Log.e(TAG, "decryptDES: ", e);
         }
         return null;
     }

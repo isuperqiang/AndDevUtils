@@ -6,7 +6,7 @@ import org.greenrobot.eventbus.EventBus;
  * @author Richie on 2017.10.03
  * EventBus 封装
  */
-public class EventBusUtils {
+public final class EventBusUtils {
 
     private EventBusUtils() {
     }

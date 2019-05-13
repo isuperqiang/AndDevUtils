@@ -1,4 +1,4 @@
-package com.richie.utils;
+package com.richie.utils.common;
 
 import android.os.Handler;
 import android.os.Looper;
@@ -17,7 +17,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @author Richie
  * 多线程工具类
  */
-public class ThreadHelper {
+public final class ThreadHelper {
     private Handler mMainHandler = new Handler(Looper.getMainLooper());
     private ThreadPoolExecutor mThreadPoolExecutor;
 

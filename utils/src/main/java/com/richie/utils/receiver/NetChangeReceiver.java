@@ -7,13 +7,12 @@ import android.net.NetworkInfo;
 
 import com.richie.easylog.ILogger;
 import com.richie.easylog.LoggerFactory;
-import com.richie.utils.BaseBroadcastReceiver;
 
 /**
  * @author Richie on 2017.11.28
  * 网络变化接收器，为每个 Activity 注册，在网络变化的时候通知用户
  */
-public class NetChangeReceiver extends BaseBroadcastReceiver {
+public final class NetChangeReceiver extends BaseBroadcastReceiver {
     /**
      * 最小触发时间, 避免多次回调
      */
@@ -23,7 +22,7 @@ public class NetChangeReceiver extends BaseBroadcastReceiver {
     private OnNetChangedListener mOnNetChangedListener;
 
     @Override
-    public void doReceive(Context context, Intent intent) {
+    protected void doReceive(Context context, Intent intent) {
         logger.debug("doReceive:{}", intent != null ? intent.toUri(0) : null);
         if (intent != null) {
             if (ConnectivityManager.CONNECTIVITY_ACTION.equals(intent.getAction())) {

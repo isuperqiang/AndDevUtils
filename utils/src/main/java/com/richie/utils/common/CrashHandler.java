@@ -1,4 +1,4 @@
-package com.richie.utils;
+package com.richie.utils.common;
 
 import android.app.Application;
 import android.content.Context;
@@ -8,6 +8,7 @@ import android.widget.Toast;
 
 import com.richie.easylog.ILogger;
 import com.richie.easylog.LoggerFactory;
+import com.richie.utils.BuildConfig;
 import com.richie.utils.listener.ActivityCallback;
 
 import java.io.File;
@@ -27,7 +28,7 @@ import java.util.Map;
  * @author Richie on 2018.03.01
  * 崩溃处理
  */
-public class CrashHandler implements Thread.UncaughtExceptionHandler {
+public final class CrashHandler implements Thread.UncaughtExceptionHandler {
     private static CrashHandler sInstance;
     private final ILogger logger = LoggerFactory.getLogger(CrashHandler.class);
     private Thread.UncaughtExceptionHandler mDefaultHandler;

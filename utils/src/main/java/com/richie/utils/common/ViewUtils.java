@@ -1,4 +1,4 @@
-package com.richie.utils;
+package com.richie.utils.common;
 
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -16,7 +16,7 @@ import android.widget.TextView;
 /**
  * @author Richie on 2017.10.12
  */
-public class ViewUtils {
+public final class ViewUtils {
 
     private ViewUtils() {
     }

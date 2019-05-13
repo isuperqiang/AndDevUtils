@@ -1,4 +1,4 @@
-package com.richie.utils;
+package com.richie.utils.common;
 
 import android.content.ContentResolver;
 import android.content.ContentUris;
@@ -22,7 +22,7 @@ import java.io.InputStream;
 /**
  * @author Richie on 2018.04.20
  */
-public class FileUtils {
+public final class FileUtils {
 
     private FileUtils() {
     }

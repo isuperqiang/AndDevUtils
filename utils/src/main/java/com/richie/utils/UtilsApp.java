@@ -9,9 +9,14 @@ import java.lang.reflect.Method;
 /**
  * @author Richie on 2018.12.16
  */
-public class UtilsApp {
+public final class UtilsApp {
     private static Context sAppContext;
 
+    /**
+     * 获取 Application Context
+     *
+     * @return
+     */
     public static Context getAppContext() {
         if (sAppContext == null) {
             sAppContext = getApplicationByReflection();
@@ -49,7 +54,7 @@ public class UtilsApp {
             getApplicationM.setAccessible(true);
             Application application = (Application) getApplicationM.invoke(currentActivityThread);
             return application.getApplicationContext();
-        } catch (Throwable e) {
+        } catch (Exception e) {
             // ignored
         }
         return null;

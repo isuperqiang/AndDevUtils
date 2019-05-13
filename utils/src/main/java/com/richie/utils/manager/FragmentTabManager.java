@@ -14,7 +14,7 @@ import java.util.Map;
 /**
  * @author Richie on 2018.12.29
  */
-public class FragmentTabManager {
+public final class FragmentTabManager {
     private FragmentManager mFragmentManager;
     private int mContainerId;
     private Map<String, Fragment> mFragmentMap;

@@ -9,7 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
-import com.richie.utils.ViewUtils;
+import com.richie.utils.common.ViewUtils;
 
 /**
  * @author Richie on 2017.10.15

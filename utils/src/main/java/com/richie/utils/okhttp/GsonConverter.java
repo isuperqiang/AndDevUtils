@@ -14,8 +14,11 @@ import java.util.Map;
  * @author Richie on 2018.12.22
  * JSON 转换器
  */
-public class GsonConverter {
+public final class GsonConverter {
     private final static Gson GSON = new Gson();
+
+    private GsonConverter() {
+    }
 
     /**
      * json to bean

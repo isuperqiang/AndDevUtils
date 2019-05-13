@@ -1,4 +1,4 @@
-package com.richie.utils;
+package com.richie.utils.common;
 
 import android.app.ActivityManager;
 import android.content.Context;
@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * @author Richie on 2017.11.08
  */
-public class AppUtils {
+public final class AppUtils {
 
     private AppUtils() {
     }

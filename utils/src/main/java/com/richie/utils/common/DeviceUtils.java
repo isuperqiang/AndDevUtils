@@ -1,4 +1,4 @@
-package com.richie.utils;
+package com.richie.utils.common;
 
 import android.content.Context;
 import android.graphics.Point;
@@ -7,11 +7,9 @@ import android.net.NetworkInfo;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 import android.view.Display;
 import android.view.WindowManager;
-
-import com.richie.easylog.ILogger;
-import com.richie.easylog.LoggerFactory;
 
 import java.lang.reflect.Method;
 import java.net.Inet4Address;
@@ -22,8 +20,8 @@ import java.util.Enumeration;
 /**
  * @author Richie on 2017.10.30
  */
-public class DeviceUtils {
-    private static ILogger logger = LoggerFactory.getLogger(DeviceUtils.class);
+public final class DeviceUtils {
+    private static final String TAG = "DeviceUtils";
 
     private DeviceUtils() {
     }
@@ -100,7 +98,7 @@ public class DeviceUtils {
             }
             return buf.toString().trim();
         } catch (Exception e) {
-            logger.error(e);
+            Log.e(TAG, "getMacAddressInAndroidM: ", e);
         }
         return defaultMacAddress;
     }
@@ -129,7 +127,7 @@ public class DeviceUtils {
                             }
                         }
                     } catch (Exception e) {
-                        logger.error(e);
+                        Log.e(TAG, "getIpAddress: ", e);
                     }
 
                 } else if (info.getType() == ConnectivityManager.TYPE_WIFI) {
@@ -155,7 +153,7 @@ public class DeviceUtils {
             method.setAccessible(true);
             return (String) method.invoke(null, key, def);
         } catch (Exception e) {
-            logger.error(e);
+            Log.e(TAG, "getSystemProperties: ", e);
             return def;
         }
     }
@@ -182,8 +180,8 @@ public class DeviceUtils {
                     }
                 }
             }
-        } catch (Exception ex) {
-            logger.error(ex);
+        } catch (Exception e) {
+            Log.e(TAG, "getLocalIp: ", e);
         }
         return "0.0.0.0";
     }
@@ -201,7 +199,7 @@ public class DeviceUtils {
                 stringBuilder.deleteCharAt(stringBuilder.length() - 1);
             }
         } catch (Exception e) {
-            logger.error(e);
+            Log.e(TAG, "getMacAddressFromIp: ", e);
         }
         return stringBuilder.toString();
     }

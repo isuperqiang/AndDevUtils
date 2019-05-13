@@ -1,4 +1,4 @@
-package com.richie.utils;
+package com.richie.utils.receiver;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

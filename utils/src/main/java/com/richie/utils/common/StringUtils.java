@@ -1,13 +1,12 @@
-package com.richie.utils;
+package com.richie.utils.common;
 
-import com.richie.easylog.ILogger;
-import com.richie.easylog.LoggerFactory;
+import android.util.Log;
 
 /**
- * @author Richie
+ * @author Richie on 2019.05.13
  */
 public final class StringUtils {
-    private static ILogger logger = LoggerFactory.getLogger(StringUtils.class);
+    private static final String TAG = "StringUtils";
 
     private StringUtils() {
     }
@@ -102,7 +101,7 @@ public final class StringUtils {
             try {
                 value = Integer.parseInt(s);
             } catch (NumberFormatException e) {
-                logger.warn(e);
+                Log.e(TAG, "parseToInt: ", e);
             }
             return value;
         }
@@ -123,7 +122,7 @@ public final class StringUtils {
             try {
                 value = Integer.parseInt(s);
             } catch (NumberFormatException e) {
-                logger.warn(e);
+                Log.e(TAG, "parseToLong: ", e);
             }
             return value;
         }
@@ -144,7 +143,7 @@ public final class StringUtils {
             try {
                 value = Float.parseFloat(s);
             } catch (NumberFormatException e) {
-                logger.warn(e);
+                Log.e(TAG, "parseToFloat: ", e);
             }
             return value;
         }
@@ -165,7 +164,7 @@ public final class StringUtils {
             try {
                 value = Double.parseDouble(s);
             } catch (NumberFormatException e) {
-                logger.warn(e);
+                Log.w(TAG, "parseToDouble: ", e);
             }
             return value;
         }

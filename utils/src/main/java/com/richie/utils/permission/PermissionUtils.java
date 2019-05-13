@@ -7,21 +7,19 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.Size;
 import android.support.v7.app.AlertDialog;
-
-import com.richie.easylog.ILogger;
-import com.richie.easylog.LoggerFactory;
+import android.util.Log;
 
 import java.util.List;
 
 import pub.devrel.easypermissions.EasyPermissions;
 
 /**
- * @author Richie on 2019.01.09
  * 针对 EasyPermissons 封装
+ * @author Richie on 2019.01.09
  */
-public class PermissionUtils {
+public final class PermissionUtils {
     private static final int REQUEST_CODE = 1024;
-    private static ILogger logger = LoggerFactory.getLogger(PermissionUtils.class);
+    private static final String TAG = "PermissionUtils";
 
     private PermissionUtils() {
     }
@@ -70,7 +68,7 @@ public class PermissionUtils {
 
         @Override
         public void onPermissionsGranted(int requestCode, @NonNull List<String> perms) {
-            logger.debug("onPermissionsGranted() called with: requestCode = [" + requestCode + "], perms = [" + perms + "]");
+            Log.d(TAG, "onPermissionsGranted() called with: requestCode = [" + requestCode + "], perms = [" + perms + "]");
             if (mPermissionCallback != null) {
                 mPermissionCallback.onPermissionsGranted(perms, requestCode);
             }
@@ -78,7 +76,7 @@ public class PermissionUtils {
 
         @Override
         public void onPermissionsDenied(int requestCode, @NonNull List<String> perms) {
-            logger.debug("onPermissionsDenied() called with: requestCode = [" + requestCode + "], perms = [" + perms + "]");
+            Log.d(TAG, "onPermissionsDenied() called with: requestCode = [" + requestCode + "], perms = [" + perms + "]");
             if (mPermissionCallback != null) {
                 mPermissionCallback.onPermissionsDenied(perms, requestCode);
             }
@@ -117,17 +115,17 @@ public class PermissionUtils {
 
         @Override
         public void onRequestPermissionsResult(int i, @NonNull String[] strings, @NonNull int[] ints) {
-            logger.debug("onRequestPermissionsResult() called with: i = [" + i + "], strings = [" + strings + "], ints = [" + ints + "]");
+            Log.d(TAG, "onRequestPermissionsResult() called with: i = [" + i + "], strings = [" + strings + "], ints = [" + ints + "]");
         }
 
         @Override
         public void onRationaleAccepted(int requestCode) {
-            logger.debug("onRationaleAccepted() called with: requestCode = [" + requestCode + "]");
+            Log.d(TAG, "onRationaleAccepted() called with: requestCode = [" + requestCode + "]");
         }
 
         @Override
         public void onRationaleDenied(int requestCode) {
-            logger.debug("onRationaleDenied() called with: requestCode = [" + requestCode + "]");
+            Log.d(TAG, "onRationaleDenied() called with: requestCode = [" + requestCode + "]");
         }
     }
 

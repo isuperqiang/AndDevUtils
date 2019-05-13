@@ -9,10 +9,10 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 /**
- * @author Richie on 2018.12.31
  * 添加请求的头信息
+ * @author Richie on 2018.12.31
  */
-public class HeaderInterceptor implements Interceptor {
+public final class HeaderInterceptor implements Interceptor {
 
     @Override
     public Response intercept(Chain chain) throws IOException {

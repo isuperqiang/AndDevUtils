@@ -1,4 +1,4 @@
-package com.richie.utils;
+package com.richie.utils.common;
 
 import com.richie.easylog.ILogger;
 import com.richie.easylog.LoggerFactory;
@@ -18,7 +18,7 @@ import okio.Okio;
 /**
  * @author Richie on 2019.02.20
  */
-public class OkioUtils {
+public final class OkioUtils {
     private static ILogger logger = LoggerFactory.getLogger(OkioUtils.class);
 
     private OkioUtils() {

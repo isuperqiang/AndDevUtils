@@ -1,4 +1,4 @@
-package com.richie.utils;
+package com.richie.utils.common;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -12,7 +12,7 @@ import java.util.UUID;
  * @author Richie on 2018.12.22
  * 获取特征值
  */
-public class FeatureUtils {
+public final class FeatureUtils {
 
     private FeatureUtils() {
     }

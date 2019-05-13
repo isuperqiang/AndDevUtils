@@ -10,7 +10,7 @@ import com.richie.utils.greendao.generated.DaoSession;
 /**
  * @author Richie on 2019.01.06
  */
-public class GreenDaoUtil {
+public final class GreenDaoUtil {
     private static final String DATABASE_NAME = "test.db";
     private DaoSession mDaoSession;
 

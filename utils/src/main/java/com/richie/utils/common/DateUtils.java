@@ -1,7 +1,4 @@
-package com.richie.utils;
-
-import com.richie.easylog.ILogger;
-import com.richie.easylog.LoggerFactory;
+package com.richie.utils.common;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -13,8 +10,7 @@ import java.util.TimeZone;
 /**
  * Created by Richie on 2018/1/24 0024
  */
-public class DateUtils {
-    private static ILogger logger = LoggerFactory.getLogger(DateUtils.class);
+public final class DateUtils {
 
     /**
      * 获取当前月日
@@ -67,7 +63,7 @@ public class DateUtils {
         try {
             date = simpleDateFormat.parse(dateS);
         } catch (ParseException e) {
-            logger.error(e);
+            // ignored
         }
         return date != null ? date.getTime() : System.currentTimeMillis();
     }

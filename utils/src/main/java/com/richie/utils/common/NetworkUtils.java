@@ -1,4 +1,4 @@
-package com.richie.utils;
+package com.richie.utils.common;
 
 import android.app.Activity;
 import android.content.ComponentName;
@@ -10,7 +10,7 @@ import android.net.NetworkInfo;
 /**
  * @author Richie on 2017.11.10
  */
-public class NetworkUtils {
+public final class NetworkUtils {
 
     private NetworkUtils() {
     }
