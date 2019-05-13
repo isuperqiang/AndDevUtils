@@ -4,10 +4,9 @@ import android.app.Application;
 import android.content.Context;
 import android.os.Build;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.widget.Toast;
 
-import com.richie.easylog.ILogger;
-import com.richie.easylog.LoggerFactory;
 import com.richie.utils.BuildConfig;
 import com.richie.utils.listener.ActivityCallback;
 
@@ -25,12 +24,13 @@ import java.util.Locale;
 import java.util.Map;
 
 /**
+ * 崩溃处理器
+ *
  * @author Richie on 2018.03.01
- * 崩溃处理
  */
 public final class CrashHandler implements Thread.UncaughtExceptionHandler {
+    private static final String TAG = "CrashHandler";
     private static CrashHandler sInstance;
-    private final ILogger logger = LoggerFactory.getLogger(CrashHandler.class);
     private Thread.UncaughtExceptionHandler mDefaultHandler;
     private Context mContext;
     private ActivityCallback mCallback;
@@ -51,7 +51,7 @@ public final class CrashHandler implements Thread.UncaughtExceptionHandler {
      * @param context application
      */
     public void init(@NonNull Context context) {
-        mContext = context;
+        mContext = context.getApplicationContext();
         mDefaultHandler = Thread.getDefaultUncaughtExceptionHandler();
         //设置该CrashHandler为系统默认的
         Thread.setDefaultUncaughtExceptionHandler(this);
@@ -72,10 +72,10 @@ public final class CrashHandler implements Thread.UncaughtExceptionHandler {
                 //延迟3秒杀进程
                 Thread.sleep(3000);
             } catch (InterruptedException e) {
-                logger.error(e);
+                // ignored
             }
             // 3秒后重启
-//            AlarmManager mgr = (AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE);
+            //AlarmManager mgr = (AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE);
             //Intent intent = new Intent(mContext, LoginActivity.class);
             //intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             //PendingIntent restartIntent = PendingIntent.getActivity(mContext, 0, intent, PendingIntent.FLAG_ONE_SHOT);
@@ -134,7 +134,7 @@ public final class CrashHandler implements Thread.UncaughtExceptionHandler {
                 field.setAccessible(true);
                 paramsMap.put(field.getName(), field.get(null).toString());
             } catch (Exception e) {
-                logger.error(e);
+                Log.e(TAG, "collectDeviceInfo: ", e);
             }
         }
 
@@ -160,7 +160,7 @@ public final class CrashHandler implements Thread.UncaughtExceptionHandler {
                 fos.close();
             }
         } catch (IOException e) {
-            logger.error(e);
+            Log.e(TAG, "saveCrashInfo2File: ", e);
         }
     }
 

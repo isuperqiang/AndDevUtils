@@ -14,8 +14,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /**
- * @author Richie on 2017.10.15
  * 单选 ImageView
+ *
+ * @author Richie on 2017.10.15
  */
 public class SingleSelectImageView extends AppCompatImageView implements Selectable {
     private OnViewSelectListener mOnViewSelectListener;

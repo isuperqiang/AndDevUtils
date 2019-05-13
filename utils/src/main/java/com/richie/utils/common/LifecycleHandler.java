@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.os.Looper;
 
 /**
+ * 可以感知 Activity 生命周期的 Handler，onDestroy 时移除所有消息和回调。
  * @author Richie on 2019.05.13
  */
 public final class LifecycleHandler extends Handler implements LifecycleObserver {

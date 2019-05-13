@@ -11,8 +11,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * GSON 转换器
  * @author Richie on 2018.12.22
- * JSON 转换器
  */
 public final class GsonConverter {
     private final static Gson GSON = new Gson();

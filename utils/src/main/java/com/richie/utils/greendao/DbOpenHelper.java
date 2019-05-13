@@ -10,7 +10,7 @@ import org.greenrobot.greendao.database.Database;
 /**
  * @author Richie on 2018.12.02
  */
-public class DbOpenHelper extends DaoMaster.OpenHelper {
+public final class DbOpenHelper extends DaoMaster.OpenHelper {
 
     public DbOpenHelper(Context context, String name) {
         super(context, name);

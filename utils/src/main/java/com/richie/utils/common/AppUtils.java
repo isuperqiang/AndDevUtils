@@ -51,7 +51,7 @@ public final class AppUtils {
         } catch (Exception e) {
             // ignored
         }
-        return "1.0.0";
+        return "";
     }
 
     /**

@@ -3,8 +3,9 @@ package com.richie.utils.view;
 import android.view.View;
 
 /**
- * @author Richie on 2018.11.09
  * 防止控件快速点击
+ *
+ * @author Richie on 2018.11.09
  */
 public abstract class OnMultiClickListener implements View.OnClickListener {
 

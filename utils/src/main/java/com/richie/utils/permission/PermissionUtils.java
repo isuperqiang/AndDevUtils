@@ -15,6 +15,7 @@ import pub.devrel.easypermissions.EasyPermissions;
 
 /**
  * 针对 EasyPermissons 封装
+ *
  * @author Richie on 2019.01.09
  */
 public final class PermissionUtils {

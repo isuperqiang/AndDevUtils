@@ -21,8 +21,9 @@ import android.widget.TextView;
 import java.util.List;
 
 /**
- * @author Richie on 2017.10.02
  * RecyclerView 通用适配器
+ *
+ * @author Richie on 2017.10.02
  */
 public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<BaseRecyclerAdapter.BaseViewHolder> {
     /**

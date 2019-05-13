@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * Fragment Tab 管理器
  * @author Richie on 2018.12.29
  */
 public final class FragmentTabManager {

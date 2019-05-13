@@ -12,6 +12,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 /**
+ * 分割线装饰器
+ *
  * @author Richie on 2018.01.10
  */
 public class DividerItemDecoration extends RecyclerView.ItemDecoration {

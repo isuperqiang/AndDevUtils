@@ -65,7 +65,7 @@ public final class ThreadHelper {
                                 }
                             });
                         }
-                        countDownLatch.await(1000, TimeUnit.MILLISECONDS);
+                        countDownLatch.await(500, TimeUnit.MILLISECONDS);
                         final T t = callable.call();
                         if (callback != null) {
                             mMainHandler.post(new Runnable() {
@@ -75,12 +75,12 @@ public final class ThreadHelper {
                                 }
                             });
                         }
-                    } catch (final Throwable throwable) {
+                    } catch (final Exception e) {
                         if (callback != null) {
                             mMainHandler.post(new Runnable() {
                                 @Override
                                 public void run() {
-                                    callback.onFailure(throwable);
+                                    callback.onFailure(e);
                                 }
                             });
                         }
@@ -118,9 +118,9 @@ public final class ThreadHelper {
                         if (callback != null) {
                             callback.onSuccess(t);
                         }
-                    } catch (final Throwable throwable) {
+                    } catch (final Exception e) {
                         if (callback != null) {
-                            callback.onFailure(throwable);
+                            callback.onFailure(e);
                         }
                     } finally {
                         if (callback != null) {
@@ -137,7 +137,7 @@ public final class ThreadHelper {
      *
      * @param r
      */
-    public void execute(Runnable r) {
+    public void execute(final Runnable r) {
         if (r != null) {
             mThreadPoolExecutor.execute(r);
         }
@@ -150,7 +150,7 @@ public final class ThreadHelper {
      * @param <T>
      * @return
      */
-    public <T> Future<T> submit(Callable<T> task) {
+    public <T> Future<T> submit(final Callable<T> task) {
         if (task != null) {
             return mThreadPoolExecutor.submit(task);
         } else {
@@ -163,7 +163,7 @@ public final class ThreadHelper {
      *
      * @param r
      */
-    public void runOnUiThread(Runnable r) {
+    public void runOnUiThread(final Runnable r) {
         if (r != null) {
             if (Thread.currentThread() == Looper.getMainLooper().getThread()) {
                 r.run();
@@ -180,7 +180,7 @@ public final class ThreadHelper {
      * @param delay
      * @return
      */
-    public boolean runOnUiPostDelayed(Runnable r, long delay) {
+    public boolean runOnUiPostDelayed(final Runnable r, final long delay) {
         if (r != null) {
             return mMainHandler.postDelayed(r, delay);
         } else {
@@ -195,7 +195,7 @@ public final class ThreadHelper {
      * @param uptimeMillis
      * @return
      */
-    public boolean runOnUiPostAtTime(Runnable r, long uptimeMillis) {
+    public boolean runOnUiPostAtTime(final Runnable r, final long uptimeMillis) {
         if (r != null) {
             return mMainHandler.postAtTime(r, uptimeMillis);
         } else {
@@ -208,7 +208,7 @@ public final class ThreadHelper {
      *
      * @param r
      */
-    public void removeUiCallbacks(Runnable r) {
+    public void removeUiCallbacks(final Runnable r) {
         if (r != null) {
             mMainHandler.removeCallbacks(r);
         }
@@ -237,7 +237,7 @@ public final class ThreadHelper {
         protected void onSuccess(T result) {
         }
 
-        protected void onFailure(Throwable throwable) {
+        protected void onFailure(Exception exception) {
         }
     }
 

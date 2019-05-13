@@ -60,7 +60,6 @@ public final class FeatureUtils {
      *
      * @param file
      * @return 32个字符
-     * @throws Exception
      */
     public static String getMd5ByFile(File file) throws Exception {
         FileInputStream fis = null;

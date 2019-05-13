@@ -3,8 +3,9 @@ package com.richie.utils.okhttp;
 import android.util.Log;
 
 /**
- * @author Richie
  * OkHttp 日志的工具类
+ *
+ * @author Richie
  */
 public final class OkLogger {
     private static boolean isEnable = true;

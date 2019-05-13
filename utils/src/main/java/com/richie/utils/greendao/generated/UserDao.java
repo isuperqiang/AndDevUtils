@@ -20,6 +20,15 @@ public class UserDao extends AbstractDao<User, Long> {
 
     public static final String TABLENAME = "user";
 
+    public UserDao(DaoConfig config) {
+        super(config);
+    }
+
+
+    public UserDao(DaoConfig config, DaoSession daoSession) {
+        super(config, daoSession);
+    }
+
     /**
      * Creates the underlying database table.
      */
@@ -31,18 +40,7 @@ public class UserDao extends AbstractDao<User, Long> {
                 "\"age\" INTEGER NOT NULL );"); // 2: age
     }
 
-
-    public UserDao(DaoConfig config) {
-        super(config);
-    }
-
-    public UserDao(DaoConfig config, DaoSession daoSession) {
-        super(config, daoSession);
-    }
-
-    /**
-     * Drops the underlying database table.
-     */
+    /** Drops the underlying database table. */
     public static void dropTable(Database db, boolean ifExists) {
         String sql = "DROP TABLE " + (ifExists ? "IF EXISTS " : "") + "\"user\"";
         db.execSQL(sql);
@@ -88,18 +86,18 @@ public class UserDao extends AbstractDao<User, Long> {
     }
 
     @Override
-    protected final Long updateKeyAfterInsert(User entity, long rowId) {
-        entity.setId(rowId);
-        return rowId;
-    }
-     
-    @Override
     public void readEntity(Cursor cursor, User entity, int offset) {
         entity.setId(cursor.getLong(offset + 0));
         entity.setName(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
         entity.setAge(cursor.getInt(offset + 2));
     }
 
+    @Override
+    protected final Long updateKeyAfterInsert(User entity, long rowId) {
+        entity.setId(rowId);
+        return rowId;
+    }
+    
     /**
      * Properties of entity User.<br/>
      * Can be used for QueryBuilder and for referencing column names.

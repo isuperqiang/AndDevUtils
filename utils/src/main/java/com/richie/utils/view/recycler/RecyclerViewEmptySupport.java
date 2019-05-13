@@ -7,8 +7,9 @@ import android.util.AttributeSet;
 import android.view.View;
 
 /**
- * @author Richie on 2018.04.09
  * 支持空白视图的 RecyclerView
+ *
+ * @author Richie on 2018.04.09
  */
 public class RecyclerViewEmptySupport extends RecyclerView {
     private View mEmptyView;

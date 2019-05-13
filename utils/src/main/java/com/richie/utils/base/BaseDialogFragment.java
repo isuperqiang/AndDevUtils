@@ -13,8 +13,8 @@ import android.view.Window;
 import android.view.WindowManager;
 
 /**
- * @author Richie on 2017.09.26
  * 所有 DialogFragment 的父类
+ * @author Richie on 2017.09.26
  */
 public abstract class BaseDialogFragment extends DialogFragment {
 

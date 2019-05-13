@@ -4,8 +4,9 @@ import android.view.View;
 import android.widget.AdapterView;
 
 /**
+ * 屏蔽 Spinner 首次触发的监听器
+ *
  * @author Richie on 2018.02.07
- * 屏蔽 spinner 首次触发的监听器
  */
 public abstract class NoFirstTriggerSpListener implements AdapterView.OnItemSelectedListener {
     /**

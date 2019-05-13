@@ -1,7 +1,7 @@
 package com.richie.utils.common;
 
-import com.richie.easylog.ILogger;
-import com.richie.easylog.LoggerFactory;
+
+import android.util.Log;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,7 +19,7 @@ import okio.Okio;
  * @author Richie on 2019.02.20
  */
 public final class OkioUtils {
-    private static ILogger logger = LoggerFactory.getLogger(OkioUtils.class);
+    private static final String TAG = "OkioUtils";
 
     private OkioUtils() {
     }
@@ -37,7 +37,7 @@ public final class OkioUtils {
         try (BufferedSource bufferedSource = Okio.buffer(Okio.source(new File(src)))) {
             return bufferedSource.readByteArray();
         } catch (IOException e) {
-            logger.error(e);
+            Log.e(TAG, "read: ", e);
         }
         return null;
     }
@@ -55,7 +55,7 @@ public final class OkioUtils {
         try (BufferedSource bufferedSource = Okio.buffer(Okio.source(is))) {
             return bufferedSource.readByteArray();
         } catch (IOException e) {
-            logger.error(e);
+            Log.e(TAG, "read: ", e);
         }
         return null;
     }
@@ -73,7 +73,7 @@ public final class OkioUtils {
         try (BufferedSource bufferedSource = Okio.buffer(Okio.source(new File(src)))) {
             return bufferedSource.readUtf8();
         } catch (IOException e) {
-            logger.error(e);
+            Log.e(TAG, "readString: ", e);
         }
         return null;
     }
@@ -92,7 +92,7 @@ public final class OkioUtils {
             ByteString byteString = ByteString.read(is, is.available());
             return byteString.utf8();
         } catch (IOException e) {
-            logger.error(e);
+            Log.e(TAG, "readString: ", e);
         }
         return null;
     }
@@ -111,7 +111,7 @@ public final class OkioUtils {
             bufferedSink.writeUtf8(data);
             return true;
         } catch (IOException e) {
-            logger.error(e);
+            Log.e(TAG, "writeString: ", e);
         }
         return false;
     }
@@ -130,7 +130,7 @@ public final class OkioUtils {
             bufferedSink.write(data);
             return true;
         } catch (IOException e) {
-            logger.error(e);
+            Log.e(TAG, "write: ", e);
         }
         return false;
     }
@@ -151,7 +151,7 @@ public final class OkioUtils {
             bufferedSink.write(bytes);
             return true;
         } catch (IOException e) {
-            logger.error(e);
+            Log.e(TAG, "copyFile: ", e);
         }
         return false;
     }
@@ -245,7 +245,7 @@ public final class OkioUtils {
             ByteString byteString = buffer.readByteString();
             return byteString.base64();
         } catch (IOException e) {
-            logger.error(e);
+            Log.e(TAG, "serialize: ", e);
         }
         return null;
     }
@@ -269,7 +269,7 @@ public final class OkioUtils {
         try (ObjectInputStream objectIn = new ObjectInputStream(buffer.inputStream())) {
             return objectIn.readObject();
         } catch (Exception e) {
-            logger.error(e);
+            Log.e(TAG, "deserialize: ", e);
         }
         return null;
     }

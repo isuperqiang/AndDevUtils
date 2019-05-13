@@ -8,8 +8,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 /**
- * @author Richie on 2017.10.20
  * RecyclerView 水平垂直边距装饰器
+ *
+ * @author Richie on 2017.10.20
  */
 public class SpaceItemDecoration extends RecyclerView.ItemDecoration {
 

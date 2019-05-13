@@ -1,8 +1,8 @@
 package com.richie.utils.eventbus;
 
 /**
- * @author Richie on 2017.10.03
  * 事件消息
+ * @author Richie on 2017.10.03
  */
 public class EventMessage<T> {
 

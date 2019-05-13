@@ -3,8 +3,9 @@ package com.richie.utils.eventbus;
 import org.greenrobot.eventbus.EventBus;
 
 /**
- * @author Richie on 2017.10.03
  * EventBus 封装
+ *
+ * @author Richie on 2017.10.03
  */
 public final class EventBusUtils {
 

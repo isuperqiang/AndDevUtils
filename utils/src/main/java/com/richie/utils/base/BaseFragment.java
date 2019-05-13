@@ -12,8 +12,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 /**
- * @author Richie on 2018.12.30
  * 所有普通 Fragment 的父类
+ * @author Richie on 2018.12.30
  */
 public abstract class BaseFragment extends Fragment {
     protected FragmentActivity mActivity;

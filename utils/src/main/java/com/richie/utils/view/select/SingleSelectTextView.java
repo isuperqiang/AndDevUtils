@@ -14,8 +14,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /**
- * @author Richie on 2017.10.15
  * 单选 TextView
+ *
+ * @author Richie on 2017.10.15
  */
 public class SingleSelectTextView extends AppCompatTextView implements Selectable {
     private OnViewSelectListener mOnViewSelectListener;

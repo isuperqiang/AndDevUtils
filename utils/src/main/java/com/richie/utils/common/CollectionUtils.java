@@ -3,8 +3,8 @@ package com.richie.utils.common;
 import java.util.Collection;
 
 /**
- * @author Richie on 2017.12.08
  * 集合工具类
+ * @author Richie on 2017.12.08
  */
 public final class CollectionUtils {
 

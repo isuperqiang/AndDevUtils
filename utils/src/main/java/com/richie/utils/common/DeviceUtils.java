@@ -18,6 +18,7 @@ import java.net.NetworkInterface;
 import java.util.Enumeration;
 
 /**
+ * 设备相关
  * @author Richie on 2017.10.30
  */
 public final class DeviceUtils {

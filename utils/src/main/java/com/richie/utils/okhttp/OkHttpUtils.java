@@ -29,6 +29,8 @@ import okhttp3.Response;
 import okhttp3.logging.HttpLoggingInterceptor;
 
 /**
+ * OkHttp 工具类
+ *
  * @author Richie on 2018.12.19
  */
 public final class OkHttpUtils {

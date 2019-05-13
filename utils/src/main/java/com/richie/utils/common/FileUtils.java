@@ -9,10 +9,12 @@ import android.os.Build;
 import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
+import android.support.annotation.Nullable;
 import android.webkit.MimeTypeMap;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -181,6 +183,21 @@ public final class FileUtils {
             externalFilesDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
         }
         return externalFilesDir.getAbsolutePath();
+    }
+
+    /**
+     * 安静地关闭流
+     *
+     * @param closeable
+     */
+    public static void closeQuietly(@Nullable Closeable closeable) {
+        try {
+            if (closeable != null) {
+                closeable.close();
+            }
+        } catch (Exception e) {
+            // ignored
+        }
     }
 
     /**

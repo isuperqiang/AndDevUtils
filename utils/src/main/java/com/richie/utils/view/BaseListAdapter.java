@@ -14,8 +14,9 @@ import android.widget.TextView;
 import java.util.List;
 
 /**
- * ListView 通用适配器
+ * ListView 通用适配器，推荐使用 RecyclerView
  */
+@Deprecated
 public abstract class BaseListAdapter<T> extends BaseAdapter {
     private List<T> mData;
     private int mLayoutRes;

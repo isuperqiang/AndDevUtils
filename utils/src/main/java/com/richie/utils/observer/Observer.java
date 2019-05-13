@@ -1,8 +1,8 @@
 package com.richie.utils.observer;
 
 /**
- * @author Richie on 2018.03.08
  * 观察者接口
+ * @author Richie on 2018.03.08
  */
 public interface Observer {
 
