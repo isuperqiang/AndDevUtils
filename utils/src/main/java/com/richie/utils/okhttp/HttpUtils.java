@@ -3,6 +3,7 @@ package com.richie.utils.okhttp;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
+import android.webkit.WebSettings;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
@@ -130,6 +131,23 @@ public final class HttpUtils {
             } catch (Exception e) {
                 OkLogger.printStackTrace(e);
             }
+
+            if (TextUtils.isEmpty(webUserAgent)) {
+                try {
+                    webUserAgent = WebSettings.getDefaultUserAgent(OkHttpUtils.getInstance().getContext());
+                } catch (Exception e) {
+                    OkLogger.printStackTrace(e);
+                }
+            }
+
+            if (TextUtils.isEmpty(webUserAgent)) {
+                try {
+                    webUserAgent = System.getProperty("http.agent");
+                } catch (Exception e) {
+                    OkLogger.printStackTrace(e);
+                }
+            }
+
             if (TextUtils.isEmpty(webUserAgent)) {
                 webUserAgent = "okhttp/square";
             }
