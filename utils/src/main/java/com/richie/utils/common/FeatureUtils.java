@@ -1,5 +1,7 @@
 package com.richie.utils.common;
 
+import android.content.Context;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.math.BigInteger;
@@ -24,6 +26,18 @@ public final class FeatureUtils {
      */
     public static String getUUID32() {
         return UUID.randomUUID().toString().replace("-", "").toLowerCase();
+    }
+
+    /**
+     * 使用 Mac 地址和 IMEI　的　MD5 作为设备唯一标识
+     *
+     * @param context
+     * @return
+     */
+    public static String getDeviceToken(Context context) {
+        String imei = DeviceUtils.getIMEI(context);
+        String macAddress = DeviceUtils.getMacAddress(context);
+        return md5Encode(imei + "-" + macAddress);
     }
 
     /**
