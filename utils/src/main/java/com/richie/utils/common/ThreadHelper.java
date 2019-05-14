@@ -14,8 +14,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * @author Richie
  * 多线程工具类
+ *
+ * @author Richie on 2019.02.20
  */
 public final class ThreadHelper {
     private Handler mMainHandler = new Handler(Looper.getMainLooper());

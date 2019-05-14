@@ -12,6 +12,7 @@ import java.util.Map;
 
 /**
  * GSON 转换器
+ *
  * @author Richie on 2018.12.22
  */
 public final class GsonConverter {

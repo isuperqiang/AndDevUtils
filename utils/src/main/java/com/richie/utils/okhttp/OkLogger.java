@@ -8,7 +8,7 @@ import android.util.Log;
  * @author Richie
  */
 public final class OkLogger {
-    private static boolean isEnable = true;
+    private static boolean isEnable = false;
     private static String tag = "OkHttpUtils";
 
     public static void debug(boolean isEnable) {

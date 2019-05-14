@@ -186,8 +186,8 @@ final class HttpsUtils {
         return null;
     }
 
-    public static class SSLParams {
-        public SSLSocketFactory sSLSocketFactory;
-        public X509TrustManager trustManager;
+    static class SSLParams {
+        SSLSocketFactory sSLSocketFactory;
+        X509TrustManager trustManager;
     }
 }

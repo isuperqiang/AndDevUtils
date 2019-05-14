@@ -11,8 +11,9 @@ import java.security.MessageDigest;
 import java.util.UUID;
 
 /**
+ * 获取特征值，一般作为唯一标记
+ *
  * @author Richie on 2018.12.22
- * 获取特征值
  */
 public final class FeatureUtils {
 

@@ -25,8 +25,8 @@ public final class HttpUtils {
     public static final MediaType MEDIA_TYPE_STREAM = MediaType.parse("application/octet-stream");
     public static final String HEAD_KEY_ACCEPT_LANGUAGE = "Accept-Language";
     public static final String HEAD_KEY_USER_AGENT = "User-Agent";
-    private static String userAgent;
-    private static String acceptLanguage;
+    private static String sUserAgent;
+    private static String sAcceptLanguage;
 
     private HttpUtils() {
     }
@@ -104,7 +104,7 @@ public final class HttpUtils {
      * Accept-Language: zh-CN,zh;q=0.8
      */
     public static String getAcceptLanguage() {
-        if (TextUtils.isEmpty(acceptLanguage)) {
+        if (TextUtils.isEmpty(sAcceptLanguage)) {
             Locale locale = Locale.getDefault();
             String language = locale.getLanguage();
             String country = locale.getCountry();
@@ -112,16 +112,16 @@ public final class HttpUtils {
             if (!TextUtils.isEmpty(country)) {
                 acceptLanguageBuilder.append('-').append(country).append(',').append(language).append(";q=0.8");
             }
-            acceptLanguage = acceptLanguageBuilder.toString();
+            sAcceptLanguage = acceptLanguageBuilder.toString();
         }
-        return acceptLanguage;
+        return sAcceptLanguage;
     }
 
     /**
      * User-Agent: Mozilla/5.0 (Linux; U; Android 5.0.2; zh-cn; Redmi Note 3 Build/LRX22G) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Mobile Safari/537.36
      */
     public static String getUserAgent() {
-        if (TextUtils.isEmpty(userAgent)) {
+        if (TextUtils.isEmpty(sUserAgent)) {
             String webUserAgent = null;
             try {
                 Class<?> sysResCls = Class.forName("com.android.internal.R$string");
@@ -129,6 +129,7 @@ public final class HttpUtils {
                 Integer resId = (Integer) webUserAgentField.get(null);
                 webUserAgent = OkHttpUtils.getInstance().getContext().getString(resId);
             } catch (Exception e) {
+                // maybe failed on Android P or higher version
                 OkLogger.printStackTrace(e);
             }
 
@@ -188,9 +189,9 @@ public final class HttpUtils {
                 buffer.append(" Build/");
                 buffer.append(id);
             }
-            userAgent = String.format(webUserAgent, buffer, "Mobile ");
+            sUserAgent = String.format(webUserAgent, buffer, "Mobile ");
         }
-        return userAgent;
+        return sUserAgent;
     }
 
 }

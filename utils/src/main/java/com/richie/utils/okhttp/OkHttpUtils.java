@@ -567,6 +567,12 @@ public final class OkHttpUtils {
         }
     }
 
+    /**
+     * 初始化 OkHttp
+     *
+     * @param context
+     * @param debug
+     */
     public void init(@NonNull Context context, boolean debug) {
         mContext = context.getApplicationContext();
         OkLogger.debug(debug);
@@ -579,7 +585,7 @@ public final class OkHttpUtils {
             HttpLoggingInterceptor logging = new HttpLoggingInterceptor(new HttpLoggingInterceptor.Logger() {
                 @Override
                 public void log(String message) {
-                    OkLogger.d(message);
+                    OkLogger.v(message);
                 }
             });
             logging.setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -588,6 +594,7 @@ public final class OkHttpUtils {
         HttpsUtils.SSLParams sslParams = HttpsUtils.getSslSocketFactory();
         builder.sslSocketFactory(sslParams.sSLSocketFactory, sslParams.trustManager);
         builder.hostnameVerifier(HttpsUtils.UnSafeHostnameVerifier);
+        HttpUtils.getUserAgent();// 主线程初始化 UA
         mOkHttpClient = builder.build();
     }
 
@@ -601,7 +608,9 @@ public final class OkHttpUtils {
      * @param <T>
      */
     public abstract static class OkHttpCallback<T> {
-
+        /**
+         * 开始
+         */
         protected void onStart() {
         }
 
@@ -619,6 +628,9 @@ public final class OkHttpUtils {
          */
         protected abstract void onFailure(String errorMsg);
 
+        /**
+         * 结束
+         */
         protected void onFinish() {
         }
     }

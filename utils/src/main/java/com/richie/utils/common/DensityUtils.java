@@ -1,9 +1,6 @@
 package com.richie.utils.common;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.util.DisplayMetrics;
-import android.view.WindowManager;
 
 /**
  * dp/px dp/sp 转化
@@ -51,32 +48,6 @@ public final class DensityUtils {
     public static int sp2px(Context context, float spValue) {
         float scaledDensity = context.getResources().getDisplayMetrics().scaledDensity;
         return (int) (spValue * scaledDensity + 0.5f);
-    }
-
-    /**
-     * 获得屏幕高度
-     *
-     * @param context
-     * @return
-     */
-    public static int getScreenWidth(@NonNull Context context) {
-        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        DisplayMetrics outMetrics = new DisplayMetrics();
-        wm.getDefaultDisplay().getMetrics(outMetrics);
-        return outMetrics.widthPixels;
-    }
-
-    /**
-     * 获得屏幕宽度
-     *
-     * @param context
-     * @return
-     */
-    public static int getScreenHeight(@NonNull Context context) {
-        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        DisplayMetrics outMetrics = new DisplayMetrics();
-        wm.getDefaultDisplay().getMetrics(outMetrics);
-        return outMetrics.heightPixels;
     }
 
 }

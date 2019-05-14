@@ -19,7 +19,7 @@ public final class EncryptUtils {
     private static final String DES_TRANSFORMATION = "DES/ECB/PKCS5Padding";
     private static final String ALGORITHM = "DES";
     /**
-     * 本地 DES 加密的 key
+     * 本地 DES 加密的 key，随机 8 个长度字符串
      */
     private final static byte[] KEY_BYTES = "V4UfmGI0".getBytes();
     private static final String TAG = "EncryptUtils";

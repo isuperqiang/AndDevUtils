@@ -3,6 +3,7 @@ package com.richie.utils.common;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 
 import java.util.List;
 
@@ -46,7 +47,8 @@ public final class AppUtils {
      */
     public static String getVersionName(Context context) {
         try {
-            PackageInfo packageInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+            PackageManager packageManager = context.getPackageManager();
+            PackageInfo packageInfo = packageManager.getPackageInfo(context.getPackageName(), 0);
             return packageInfo.versionName;
         } catch (Exception e) {
             // ignored
@@ -60,10 +62,11 @@ public final class AppUtils {
      * @param context
      * @return
      */
-    public static int getVersionCode(Context context) {
+    public static long getVersionCode(Context context) {
         try {
-            PackageInfo packageInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
-            return packageInfo.versionCode;
+            PackageManager packageManager = context.getPackageManager();
+            PackageInfo packageInfo = packageManager.getPackageInfo(context.getPackageName(), 0);
+            return packageInfo.getLongVersionCode();
         } catch (Exception e) {
             // ignored
         }
