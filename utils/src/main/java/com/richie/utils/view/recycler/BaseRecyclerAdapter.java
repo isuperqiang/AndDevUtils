@@ -124,10 +124,20 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<BaseRe
      */
     protected abstract void bindViewHolder(BaseViewHolder viewHolder, T item);
 
+    /**
+     * Item 点击事件监听器
+     *
+     * @param onItemClickListener
+     */
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
         this.mOnItemClickListener = onItemClickListener;
     }
 
+    /**
+     * Item 长按事件监听器
+     *
+     * @param onItemLongClickListener
+     */
     public void setOnItemLongClickListener(OnItemLongClickListener onItemLongClickListener) {
         mOnItemLongClickListener = onItemLongClickListener;
     }
@@ -144,7 +154,9 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<BaseRe
             mSelectedItems.put(mLastSelected, data);
             notifyItemChanged(mLastSelected);
         }
-        mSelectedItems.remove(lastSelected);
+        if (lastSelected != mLastSelected) {
+            mSelectedItems.remove(lastSelected);
+        }
         notifyItemChanged(lastSelected);
     }
 
