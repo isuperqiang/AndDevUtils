@@ -27,14 +27,27 @@ public final class OkioUtils {
     /**
      * 从文件读取字节数组
      *
+     * @param srcPath
+     * @return
+     */
+    public static byte[] read(String srcPath) {
+        if (isEmpty(srcPath)) {
+            return null;
+        }
+        return read(new File(srcPath));
+    }
+
+    /**
+     * 从文件读取字节数组
+     *
      * @param src
      * @return
      */
-    public static byte[] read(String src) {
-        if (isEmpty(src)) {
+    public static byte[] read(File src) {
+        if (src == null) {
             return null;
         }
-        try (BufferedSource bufferedSource = Okio.buffer(Okio.source(new File(src)))) {
+        try (BufferedSource bufferedSource = Okio.buffer(Okio.source(src))) {
             return bufferedSource.readByteArray();
         } catch (IOException e) {
             Log.e(TAG, "read: ", e);
@@ -63,14 +76,27 @@ public final class OkioUtils {
     /**
      * 从文件读取字符串
      *
+     * @param srcPath
+     * @return
+     */
+    public static String readString(String srcPath) {
+        if (isEmpty(srcPath)) {
+            return null;
+        }
+        return readString(new File(srcPath));
+    }
+
+    /**
+     * 从文件读取字符串
+     *
      * @param src
      * @return
      */
-    public static String readString(String src) {
-        if (isEmpty(src)) {
+    public static String readString(File src) {
+        if (src == null) {
             return null;
         }
-        try (BufferedSource bufferedSource = Okio.buffer(Okio.source(new File(src)))) {
+        try (BufferedSource bufferedSource = Okio.buffer(Okio.source(src))) {
             return bufferedSource.readUtf8();
         } catch (IOException e) {
             Log.e(TAG, "readString: ", e);
@@ -101,13 +127,26 @@ public final class OkioUtils {
      * 写字符串到文件
      *
      * @param data
-     * @param dest
+     * @param destPath
      */
-    public static boolean writeString(String data, String dest) {
-        if (isEmpty(data) || isEmpty(dest)) {
+    public static boolean writeString(String data, String destPath) {
+        if (isEmpty(data) || isEmpty(destPath)) {
             return false;
         }
-        try (BufferedSink bufferedSink = Okio.buffer(Okio.sink(new File(dest)))) {
+        return writeString(data, new File(destPath));
+    }
+
+    /**
+     * 写字符串到文件
+     *
+     * @param data
+     * @param dest
+     */
+    public static boolean writeString(String data, File dest) {
+        if (isEmpty(data) || dest == null) {
+            return false;
+        }
+        try (BufferedSink bufferedSink = Okio.buffer(Okio.sink(dest))) {
             bufferedSink.writeUtf8(data);
             return true;
         } catch (IOException e) {
@@ -120,13 +159,26 @@ public final class OkioUtils {
      * 写字节数组到文件
      *
      * @param data
-     * @param dest
+     * @param destPath
      */
-    public static boolean write(byte[] data, String dest) {
-        if (data == null || isEmpty(dest)) {
+    public static boolean write(byte[] data, String destPath) {
+        if (data == null || isEmpty(destPath)) {
             return false;
         }
-        try (BufferedSink bufferedSink = Okio.buffer(Okio.sink(new File(dest)))) {
+        return write(data, new File(destPath));
+    }
+
+    /**
+     * 写字节数组到文件
+     *
+     * @param data
+     * @param dest
+     */
+    public static boolean write(byte[] data, File dest) {
+        if (data == null || dest == null) {
+            return false;
+        }
+        try (BufferedSink bufferedSink = Okio.buffer(Okio.sink(dest))) {
             bufferedSink.write(data);
             return true;
         } catch (IOException e) {
@@ -138,15 +190,28 @@ public final class OkioUtils {
     /**
      * 拷贝文件
      *
+     * @param srcPath
+     * @param destPath
+     */
+    public static boolean copyFile(String srcPath, String destPath) {
+        if (isEmpty(srcPath) || isEmpty(destPath)) {
+            return false;
+        }
+        return copyFile(new File(srcPath), new File(destPath));
+    }
+
+    /**
+     * 拷贝文件
+     *
      * @param src
      * @param dest
      */
-    public static boolean copyFile(String src, String dest) {
-        if (isEmpty(src) || isEmpty(dest)) {
+    public static boolean copyFile(File src, File dest) {
+        if (src == null || dest == null) {
             return false;
         }
-        try (BufferedSource bufferedSource = Okio.buffer(Okio.source(new File(src)));
-             BufferedSink bufferedSink = Okio.buffer(Okio.sink(new File(dest)))) {
+        try (BufferedSource bufferedSource = Okio.buffer(Okio.source(src));
+             BufferedSink bufferedSink = Okio.buffer(Okio.sink(dest))) {
             byte[] bytes = bufferedSource.readByteArray();
             bufferedSink.write(bytes);
             return true;
