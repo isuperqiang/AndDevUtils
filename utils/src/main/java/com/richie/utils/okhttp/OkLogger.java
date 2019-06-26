@@ -5,7 +5,7 @@ import android.util.Log;
 /**
  * OkHttp 日志的工具类
  *
- * @author Richie
+ * @author Richie on 2018.12.31
  */
 public final class OkLogger {
     private static boolean isEnable = false;

@@ -3,6 +3,7 @@ package com.richie.utils;
 import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.Context;
+import android.util.Log;
 
 import java.lang.reflect.Method;
 
@@ -55,7 +56,7 @@ public final class UtilsApp {
             Application application = (Application) getApplicationM.invoke(currentActivityThread);
             return application.getApplicationContext();
         } catch (Exception e) {
-            // ignored
+            Log.e("UtilsApp", "getApplicationByReflection: ", e);
         }
         return null;
     }

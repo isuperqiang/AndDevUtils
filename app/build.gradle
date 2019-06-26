@@ -5,7 +5,7 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
-        applicationId "cn.richie.anddevutils"
+        applicationId "cn.richie.anddevutil"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode rootProject.ext.versionCode
@@ -36,4 +36,5 @@ dependencies {
     implementation project(':utils')
     // 屏幕适配，https://github.com/JessYanCoding/AndroidAutoSize
     implementation 'me.jessyan:autosize:1.1.2'
+    implementation 'com.github.isuperqiang:AndEasyLog:1.7.0'
 }
