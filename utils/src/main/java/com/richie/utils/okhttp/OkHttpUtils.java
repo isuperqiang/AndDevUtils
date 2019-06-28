@@ -39,9 +39,9 @@ public final class OkHttpUtils {
     private static final String DOWNLOAD_FAILURE_MESSAGE = "文件下载失败";
     private static final String RESPONSE_FAILURE_MESSAGE = "响应错误 ";
     private static final String UPLOAD_FAILURE_MESSAGE = "文件上传失败 ";
-    private Handler mMainHandler = new Handler(Looper.getMainLooper());
+    private static final int TIMEOUT = 10;
+    private final Handler mMainHandler = new Handler(Looper.getMainLooper());
     private OkHttpClient mOkHttpClient;
-    private static final int TIMEOUT = 30;
     private Context mContext;
 
     private OkHttpUtils() {
@@ -49,6 +49,41 @@ public final class OkHttpUtils {
 
     public static OkHttpUtils getInstance() {
         return OkHttpUtilsHolder.INSTANCE;
+    }
+
+    /**
+     * 初始化 OkHttp
+     *
+     * @param context
+     * @param debug
+     */
+    public void init(@NonNull Context context, boolean debug) {
+        mContext = context.getApplicationContext();
+        OkLogger.debug(debug);
+        OkHttpClient.Builder builder = new OkHttpClient.Builder()
+                .connectTimeout(TIMEOUT, TimeUnit.SECONDS)
+                .readTimeout(TIMEOUT, TimeUnit.SECONDS)
+                .writeTimeout(TIMEOUT * 5, TimeUnit.SECONDS);
+        builder.addInterceptor(new HeaderInterceptor());
+        if (debug) {
+            HttpLoggingInterceptor logging = new HttpLoggingInterceptor(new HttpLoggingInterceptor.Logger() {
+                @Override
+                public void log(String message) {
+                    OkLogger.v(message);
+                }
+            });
+            logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+            builder.addInterceptor(logging);
+        }
+        HttpsUtils.SSLParams sslParams = HttpsUtils.getSslSocketFactory();
+        builder.sslSocketFactory(sslParams.sSLSocketFactory, sslParams.trustManager);
+        builder.hostnameVerifier(HttpsUtils.UnSafeHostnameVerifier);
+        HttpUtils.getUserAgent();// 主线程初始化 UA
+        mOkHttpClient = builder.build();
+    }
+
+    public Context getContext() {
+        return mContext;
     }
 
     public void getAsString(@NonNull String url, @NonNull OkHttpCallback<String> callback) {
@@ -59,12 +94,12 @@ public final class OkHttpUtils {
      * 发送 Get 请求，返回值是字符串
      *
      * @param url
-     * @param params
+     * @param paramMap
      * @param callback
      */
-    public void getAsString(@NonNull String url, Map<String, String> params, @NonNull OkHttpCallback<String> callback) {
-        if (params != null) {
-            url = HttpUtils.attachHttpGetParams(url, params);
+    public void getAsString(@NonNull String url, Map<String, String> paramMap, @NonNull OkHttpCallback<String> callback) {
+        if (paramMap != null) {
+            url = HttpUtils.attachHttpGetParams(url, paramMap);
         }
         Request request = buildGetRequest(url);
         newStringCall(callback, request);
@@ -85,13 +120,13 @@ public final class OkHttpUtils {
      * 发送 Get 请求，返回值是数据实体
      *
      * @param url
-     * @param params
+     * @param paramMap
      * @param callback
      * @param <T>
      */
-    public <T> void getAsEntity(@NonNull String url, Map<String, String> params, @NonNull final OkHttpCallback<T> callback) {
-        if (params != null) {
-            url = HttpUtils.attachHttpGetParams(url, params);
+    public <T> void getAsEntity(@NonNull String url, Map<String, String> paramMap, @NonNull final OkHttpCallback<T> callback) {
+        if (paramMap != null) {
+            url = HttpUtils.attachHttpGetParams(url, paramMap);
         }
         Request request = buildGetRequest(url);
         newEntityCall(callback, request);
@@ -101,11 +136,11 @@ public final class OkHttpUtils {
      * 发送 Post 键值对，表单数据，返回字符串
      *
      * @param url
-     * @param params
+     * @param paramMap
      * @param callback
      */
-    public void postKeyValueAsString(@NonNull String url, Map<String, String> params, @NonNull OkHttpCallback<String> callback) {
-        Request request = buildPostRequest(url, params);
+    public void postKeyValueAsString(@NonNull String url, Map<String, String> paramMap, @NonNull OkHttpCallback<String> callback) {
+        Request request = buildPostRequest(url, paramMap);
         newStringCall(callback, request);
     }
 
@@ -113,11 +148,11 @@ public final class OkHttpUtils {
      * 发送 Post 键值对，表单数据，返回数据实体
      *
      * @param url
-     * @param params
+     * @param paramMap
      * @param callback
      */
-    public <T> void postKeyValueAsEntity(@NonNull String url, Map<String, String> params, @NonNull OkHttpCallback<T> callback) {
-        Request request = buildPostRequest(url, params);
+    public <T> void postKeyValueAsEntity(@NonNull String url, Map<String, String> paramMap, @NonNull OkHttpCallback<T> callback) {
+        Request request = buildPostRequest(url, paramMap);
         newEntityCall(callback, request);
     }
 
@@ -311,10 +346,11 @@ public final class OkHttpUtils {
      * @param url
      * @param name
      * @param file
-     * @param params
+     * @param paramMap
      * @param callback
      */
-    public void uploadFile(@NonNull String url, @NonNull String name, @NonNull File file, @NonNull Map<String, String> params, @NonNull final OkHttpCallback<String> callback) {
+    public void uploadFile(@NonNull String url, @NonNull String name, @NonNull File file,
+                           @NonNull Map<String, String> paramMap, @NonNull final OkHttpCallback<String> callback) {
         if (!file.exists() || !file.isFile()) {
             runOnUiThread(new Runnable() {
                 @Override
@@ -328,7 +364,7 @@ public final class OkHttpUtils {
         }
         MultipartBody.Builder mbBuilder = new MultipartBody.Builder();
         mbBuilder.setType(MultipartBody.FORM);
-        Set<Map.Entry<String, String>> entries = params.entrySet();
+        Set<Map.Entry<String, String>> entries = paramMap.entrySet();
         for (Map.Entry<String, String> entry : entries) {
             mbBuilder.addFormDataPart(entry.getKey(), entry.getValue());
         }
@@ -436,18 +472,18 @@ public final class OkHttpUtils {
     }
 
     @NonNull
-    private Request buildPostRequest(@NonNull String url, RequestBody fileBody) {
+    private Request buildPostRequest(@NonNull String url, RequestBody requestBody) {
         return new Request.Builder()
-                .post(fileBody)
+                .post(requestBody)
                 .url(url)
                 .build();
     }
 
     @NonNull
-    private Request buildPostRequest(@NonNull String url, Map<String, String> params) {
+    private Request buildPostRequest(@NonNull String url, Map<String, String> paramMap) {
         FormBody.Builder builder = new FormBody.Builder();
-        if (params != null && params.size() > 0) {
-            Set<Map.Entry<String, String>> entries = params.entrySet();
+        if (paramMap != null && paramMap.size() > 0) {
+            Set<Map.Entry<String, String>> entries = paramMap.entrySet();
             for (Map.Entry<String, String> entry : entries) {
                 builder.add(entry.getKey(), entry.getValue());
             }
@@ -567,35 +603,14 @@ public final class OkHttpUtils {
         }
     }
 
-    /**
-     * 初始化 OkHttp
-     *
-     * @param context
-     * @param debug
-     */
-    public void init(@NonNull Context context, boolean debug) {
-        mContext = context.getApplicationContext();
-        OkLogger.debug(debug);
-        OkHttpClient.Builder builder = new OkHttpClient.Builder()
-                .connectTimeout(TIMEOUT, TimeUnit.SECONDS)
-                .readTimeout(TIMEOUT, TimeUnit.SECONDS)
-                .writeTimeout(TIMEOUT * 5, TimeUnit.SECONDS);
-        builder.addInterceptor(new HeaderInterceptor());
-        if (debug) {
-            HttpLoggingInterceptor logging = new HttpLoggingInterceptor(new HttpLoggingInterceptor.Logger() {
-                @Override
-                public void log(String message) {
-                    OkLogger.v(message);
-                }
-            });
-            logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-            builder.addInterceptor(logging);
-        }
-        HttpsUtils.SSLParams sslParams = HttpsUtils.getSslSocketFactory();
-        builder.sslSocketFactory(sslParams.sSLSocketFactory, sslParams.trustManager);
-        builder.hostnameVerifier(HttpsUtils.UnSafeHostnameVerifier);
-        HttpUtils.getUserAgent();// 主线程初始化 UA
-        mOkHttpClient = builder.build();
+    private <T> void onResponseFailure(final Response response, @NonNull final OkHttpCallback<T> callback) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                callback.onFailure(RESPONSE_FAILURE_MESSAGE + response.code() + ":" + response.message());
+                callback.onFinish();
+            }
+        });
     }
 
     private static class OkHttpUtilsHolder {
@@ -635,16 +650,6 @@ public final class OkHttpUtils {
         }
     }
 
-    private <T> void onResponseFailure(final Response response, @NonNull final OkHttpCallback<T> callback) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                callback.onFailure(RESPONSE_FAILURE_MESSAGE + response.code() + ":" + response.message());
-                callback.onFinish();
-            }
-        });
-    }
-
     public abstract static class ProgressOkHttpCallback extends OkHttpCallback<File> {
         /**
          * 进度
@@ -655,7 +660,4 @@ public final class OkHttpUtils {
         protected abstract void onProgress(long current, long total);
     }
 
-    public Context getContext() {
-        return mContext;
-    }
 }
