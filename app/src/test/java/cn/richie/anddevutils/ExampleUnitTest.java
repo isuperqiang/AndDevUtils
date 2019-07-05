@@ -1,5 +1,6 @@
 package cn.richie.anddevutils;
 
+import com.richie.utils.common.DecimalUtils;
 import com.richie.utils.common.FeatureUtils;
 
 import org.junit.Test;
@@ -17,6 +18,15 @@ public class ExampleUnitTest {
     @Test
     public void addition_isCorrect() {
         assertEquals(4, 2 + 2);
+    }
+
+    @Test
+    public void floatEqual() {
+        float a = 0.3f * 3;
+        float b = 1.0f - 0.1f;
+        boolean b1 = DecimalUtils.floatEquals(a, b);
+        boolean b2 = a == b;
+        System.out.println("b1:" + b1 + ", b2:" + b2 + ", a: " + a + ", b: " + b);
     }
 
     @Test
