@@ -157,7 +157,9 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<BaseRe
         if (lastSelected != mLastSelected) {
             mSelectedItems.remove(lastSelected);
         }
-        notifyItemChanged(lastSelected);
+        if (lastSelected >= 0) {
+            notifyItemChanged(lastSelected);
+        }
     }
 
     /**
@@ -202,7 +204,7 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<BaseRe
      */
     public void clearSingleItemSelected() {
         mSelectedItems.clear();
-        if (isValidPosition(mLastSelected)) {
+        if (mLastSelected >= 0) {
             notifyItemChanged(mLastSelected);
         }
         mLastSelected = DEFAULT_SELECTED_POSITION;
@@ -640,7 +642,9 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<BaseRe
                 if (isValidPosition(mLastSelected) && mLastSelected != position) {
                     mSelectedItems.remove(mLastSelected);
                 }
-                notifyItemChanged(mLastSelected);
+                if (mLastSelected >= 0) {
+                    notifyItemChanged(mLastSelected);
+                }
                 notifyItemChanged(position);
                 mLastSelected = position;
             } else if (choiceMode == MULTI_CHOICE_MODE) {
