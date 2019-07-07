@@ -23,10 +23,8 @@ public final class HttpUtils {
     public static final MediaType MEDIA_TYPE_JSON = MediaType.parse("application/json; charset=utf-8");
     public static final MediaType MEDIA_TYPE_PLAIN = MediaType.parse("text/plain; charset=utf-8");
     public static final MediaType MEDIA_TYPE_STREAM = MediaType.parse("application/octet-stream");
-    public static final String HEAD_KEY_ACCEPT_LANGUAGE = "Accept-Language";
     public static final String HEAD_KEY_USER_AGENT = "User-Agent";
     private static String sUserAgent;
-    private static String sAcceptLanguage;
 
     private HttpUtils() {
     }
@@ -98,23 +96,6 @@ public final class HttpUtils {
             return MEDIA_TYPE_STREAM;
         }
         return MediaType.parse(contentType);
-    }
-
-    /**
-     * Accept-Language: zh-CN,zh;q=0.8
-     */
-    public static String getAcceptLanguage() {
-        if (TextUtils.isEmpty(sAcceptLanguage)) {
-            Locale locale = Locale.getDefault();
-            String language = locale.getLanguage();
-            String country = locale.getCountry();
-            StringBuilder acceptLanguageBuilder = new StringBuilder(language);
-            if (!TextUtils.isEmpty(country)) {
-                acceptLanguageBuilder.append('-').append(country).append(',').append(language).append(";q=0.8");
-            }
-            sAcceptLanguage = acceptLanguageBuilder.toString();
-        }
-        return sAcceptLanguage;
     }
 
     /**

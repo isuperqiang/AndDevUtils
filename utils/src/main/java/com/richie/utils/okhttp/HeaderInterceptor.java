@@ -9,7 +9,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 /**
- * 添加请求的头信息
+ * 添加请求的头信息，User Agent
  *
  * @author Richie on 2018.12.31
  */
@@ -19,10 +19,6 @@ final class HeaderInterceptor implements Interceptor {
     public Response intercept(Chain chain) throws IOException {
         Request request = chain.request();
         Request.Builder builder = request.newBuilder();
-        String acceptLanguage = HttpUtils.getAcceptLanguage();
-        if (!TextUtils.isEmpty(acceptLanguage)) {
-            builder.addHeader(HttpUtils.HEAD_KEY_ACCEPT_LANGUAGE, acceptLanguage);
-        }
         String userAgent = HttpUtils.getUserAgent();
         if (!TextUtils.isEmpty(userAgent)) {
             builder.addHeader(HttpUtils.HEAD_KEY_USER_AGENT, userAgent);
