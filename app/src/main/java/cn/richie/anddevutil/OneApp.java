@@ -24,6 +24,9 @@ public class OneApp extends Application {
         sContext = this;
         boolean debug = BuildConfig.DEBUG;
         AutoSizeConfig.getInstance().setLog(debug);
-        LoggerFactory.init(new LoggerConfig.Builder().context(this).logcatEnabled(debug).build());
+        LoggerFactory.init(new LoggerConfig.Builder()
+                .context(this)
+                .logcatEnabled(debug)
+                .build());
     }
 }
