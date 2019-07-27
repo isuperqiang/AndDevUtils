@@ -23,7 +23,7 @@ public final class ThreadHelper {
     private ThreadPoolExecutor mThreadPoolExecutor;
 
     private ThreadHelper() {
-        // copy from AsyncTask THREAD_POOL_EXECUTOR
+        // Copy from AsyncTask#THREAD_POOL_EXECUTOR
         ThreadFactory threadFactory = new ThreadFactory() {
             private final AtomicInteger mCount = new AtomicInteger(1);
 
@@ -45,59 +45,61 @@ public final class ThreadHelper {
     }
 
     /**
-     * 有返回值的异步任务，主线程调用并接收回调
+     * 有返回值的异步任务，在主线程回调
      *
      * @param callable
      * @param callback
      */
     public <T> void enqueueOnUiThread(final Callable<T> callable, final Callback<T> callback) {
-        if (callable != null) {
-            mThreadPoolExecutor.execute(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        final CountDownLatch countDownLatch = new CountDownLatch(1);
-                        if (callback != null) {
-                            mMainHandler.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    callback.onStart();
-                                    countDownLatch.countDown();
-                                }
-                            });
-                        }
-                        countDownLatch.await(500, TimeUnit.MILLISECONDS);
-                        final T t = callable.call();
-                        if (callback != null) {
-                            mMainHandler.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    callback.onSuccess(t);
-                                }
-                            });
-                        }
-                    } catch (final Exception e) {
-                        if (callback != null) {
-                            mMainHandler.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    callback.onFailure(e);
-                                }
-                            });
-                        }
-                    } finally {
-                        if (callback != null) {
-                            mMainHandler.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    callback.onFinish();
-                                }
-                            });
-                        }
+        if (callable == null) {
+            return;
+        }
+
+        mThreadPoolExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    CountDownLatch countDownLatch = new CountDownLatch(1);
+                    if (callback != null) {
+                        mMainHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                callback.onStart();
+                                countDownLatch.countDown();
+                            }
+                        });
+                    }
+                    countDownLatch.await(500, TimeUnit.MILLISECONDS);
+                    T t = callable.call();
+                    if (callback != null) {
+                        mMainHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                callback.onSuccess(t);
+                            }
+                        });
+                    }
+                } catch (Exception e) {
+                    if (callback != null) {
+                        mMainHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                callback.onFailure(e);
+                            }
+                        });
+                    }
+                } finally {
+                    if (callback != null) {
+                        mMainHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                callback.onFinish();
+                            }
+                        });
                     }
                 }
-            });
-        }
+            }
+        });
     }
 
     /**
@@ -107,30 +109,32 @@ public final class ThreadHelper {
      * @param callback
      */
     public <T> void enqueue(final Callable<T> callable, final Callback<T> callback) {
-        if (callable != null) {
-            mThreadPoolExecutor.execute(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        if (callback != null) {
-                            callback.onStart();
-                        }
-                        final T t = callable.call();
-                        if (callback != null) {
-                            callback.onSuccess(t);
-                        }
-                    } catch (final Exception e) {
-                        if (callback != null) {
-                            callback.onFailure(e);
-                        }
-                    } finally {
-                        if (callback != null) {
-                            callback.onFinish();
-                        }
+        if (callable == null) {
+            return;
+        }
+
+        mThreadPoolExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    if (callback != null) {
+                        callback.onStart();
+                    }
+                    T t = callable.call();
+                    if (callback != null) {
+                        callback.onSuccess(t);
+                    }
+                } catch (Exception e) {
+                    if (callback != null) {
+                        callback.onFailure(e);
+                    }
+                } finally {
+                    if (callback != null) {
+                        callback.onFinish();
                     }
                 }
-            });
-        }
+            }
+        });
     }
 
     /**
@@ -145,7 +149,23 @@ public final class ThreadHelper {
     }
 
     /**
-     * 有返回值的异步任务
+     * 有返回值的异步任务，阻塞调用线程
+     *
+     * @param task
+     * @param <T>
+     * @return
+     */
+    public <T> T get(final Callable<T> task) throws Exception {
+        if (task != null) {
+            Future<T> future = mThreadPoolExecutor.submit(task);
+            return future.get();
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * 有返回值的异步任务，返回 Future
      *
      * @param task
      * @param <T>
@@ -160,22 +180,24 @@ public final class ThreadHelper {
     }
 
     /**
-     * 主线程任务
+     * 主线程执行任务
      *
      * @param r
      */
     public void runOnUiThread(final Runnable r) {
-        if (r != null) {
-            if (Thread.currentThread() == Looper.getMainLooper().getThread()) {
-                r.run();
-            } else {
-                mMainHandler.post(r);
-            }
+        if (r == null) {
+            return;
+        }
+
+        if (Thread.currentThread() == Looper.getMainLooper().getThread()) {
+            r.run();
+        } else {
+            mMainHandler.post(r);
         }
     }
 
     /**
-     * 主线程延时任务
+     * 主线程执行延时任务
      *
      * @param r
      * @param delay
@@ -190,7 +212,7 @@ public final class ThreadHelper {
     }
 
     /**
-     * 主线程定时任务
+     * 主线程执行定时任务
      *
      * @param r
      * @param uptimeMillis
@@ -220,6 +242,15 @@ public final class ThreadHelper {
      */
     public void removeUiAllTasks() {
         mMainHandler.removeCallbacksAndMessages(null);
+    }
+
+    /**
+     * 结束线程池
+     */
+    public void shutdown() {
+        if (!mThreadPoolExecutor.isShutdown()) {
+            mThreadPoolExecutor.shutdown();
+        }
     }
 
     /**
