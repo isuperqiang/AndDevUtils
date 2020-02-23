@@ -1,9 +1,10 @@
 package com.richie.utils.okhttp;
 
 import android.os.Build;
-import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.webkit.WebSettings;
+
+import androidx.annotation.NonNull;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;

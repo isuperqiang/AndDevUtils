@@ -59,7 +59,7 @@ public final class ThreadHelper {
             @Override
             public void run() {
                 try {
-                    CountDownLatch countDownLatch = new CountDownLatch(1);
+                    final CountDownLatch countDownLatch = new CountDownLatch(1);
                     if (callback != null) {
                         mMainHandler.post(new Runnable() {
                             @Override
@@ -70,7 +70,7 @@ public final class ThreadHelper {
                         });
                     }
                     countDownLatch.await(500, TimeUnit.MILLISECONDS);
-                    T t = callable.call();
+                    final T t = callable.call();
                     if (callback != null) {
                         mMainHandler.post(new Runnable() {
                             @Override
@@ -79,7 +79,7 @@ public final class ThreadHelper {
                             }
                         });
                     }
-                } catch (Exception e) {
+                } catch (final Exception e) {
                     if (callback != null) {
                         mMainHandler.post(new Runnable() {
                             @Override

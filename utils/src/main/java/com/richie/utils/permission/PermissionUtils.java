@@ -3,11 +3,12 @@ package com.richie.utils.permission;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.Size;
-import android.support.v7.app.AlertDialog;
 import android.util.Log;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.Size;
+import androidx.appcompat.app.AlertDialog;
 
 import java.util.List;
 

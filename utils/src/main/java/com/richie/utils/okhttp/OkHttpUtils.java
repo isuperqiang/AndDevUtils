@@ -3,8 +3,9 @@ package com.richie.utils.okhttp;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.annotation.NonNull;
 import android.webkit.MimeTypeMap;
+
+import androidx.annotation.NonNull;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
