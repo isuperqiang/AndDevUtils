@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 
 /**
  * 所有 Activity 的父类
+ *
  * @author Richie on 2019.01.12
  */
 public abstract class BaseActivity extends AppCompatActivity {

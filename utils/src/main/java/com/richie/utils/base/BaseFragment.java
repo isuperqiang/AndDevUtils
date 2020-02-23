@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 
 /**
  * 所有普通 Fragment 的父类
+ *
  * @author Richie on 2018.12.30
  */
 public abstract class BaseFragment extends Fragment {

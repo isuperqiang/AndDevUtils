@@ -9,6 +9,7 @@ import java.util.List;
 
 /**
  * Activity 生命周期回调
+ *
  * @author Richie on 2018.05.11
  */
 public class ActivityCallback implements Application.ActivityLifecycleCallbacks {

@@ -14,6 +14,7 @@ import android.view.WindowManager;
 
 /**
  * 所有 DialogFragment 的父类
+ *
  * @author Richie on 2017.09.26
  */
 public abstract class BaseDialogFragment extends DialogFragment {
@@ -63,6 +64,7 @@ public abstract class BaseDialogFragment extends DialogFragment {
 
     /**
      * 初始化视图
+     *
      * @param rootView
      */
     protected void initView(View rootView) {

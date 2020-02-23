@@ -7,6 +7,7 @@ import android.util.Log;
 
 /**
  * 所有 BroadcastReceiver 的父类
+ *
  * @author Richie on 2017.11.16
  */
 public abstract class BaseBroadcastReceiver extends BroadcastReceiver {

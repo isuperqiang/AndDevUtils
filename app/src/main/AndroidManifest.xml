@@ -10,7 +10,7 @@
         android:resizeableActivity="false"
         android:maxAspectRatio="2.4"
         android:roundIcon="@mipmap/ic_launcher_round"
-        android:supportsRtl="true"
+        android:supportsRtl="false"
         android:theme="@style/AppTheme">
         <!--设计稿的标注尺寸-->
         <meta-data
