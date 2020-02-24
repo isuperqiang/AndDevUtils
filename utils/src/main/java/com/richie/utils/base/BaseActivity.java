@@ -15,9 +15,21 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(getLayoutResID());
+        setContentView(getLayoutResId());
         initView();
         initData();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        resume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        pause();
     }
 
     @Override
@@ -27,12 +39,12 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     /**
-     * 获取布局
+     * 获取布局资源
      *
-     * @return layout resId
+     * @return 布局 ID
      */
     @LayoutRes
-    protected abstract int getLayoutResID();
+    protected abstract int getLayoutResId();
 
     /**
      * 初始化视图
@@ -44,6 +56,18 @@ public abstract class BaseActivity extends AppCompatActivity {
      * 初始化数据
      */
     protected void initData() {
+    }
+
+    /**
+     * 暂停
+     */
+    protected void pause() {
+    }
+
+    /**
+     * 恢复
+     */
+    protected void resume() {
     }
 
     /**

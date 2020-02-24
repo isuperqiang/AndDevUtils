@@ -18,14 +18,14 @@ import java.util.Map;
  */
 public final class FragmentTabManager {
     private FragmentManager mFragmentManager;
-    private int mContainerId;
     private Map<String, Fragment> mFragmentMap;
+    private int mContainerId;
     private String mShownTag;
 
     public FragmentTabManager(@NonNull FragmentManager fragmentManager, @IdRes int containerId) {
         mFragmentManager = fragmentManager;
         mContainerId = containerId;
-        mFragmentMap = new HashMap<>(8);
+        mFragmentMap = new HashMap<>(16);
     }
 
     /**

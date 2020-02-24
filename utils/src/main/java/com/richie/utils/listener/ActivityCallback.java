@@ -51,7 +51,8 @@ public class ActivityCallback implements Application.ActivityLifecycleCallbacks 
     }
 
     /**
-     * 添加Activity
+     * 添加 Activity
+     * @param activity
      */
     private void addActivity(Activity activity) {
         if (!mActivities.contains(activity)) {
@@ -60,14 +61,15 @@ public class ActivityCallback implements Application.ActivityLifecycleCallbacks 
     }
 
     /**
-     * 移除Activity
+     * 移除 Activity
+     * @param activity
      */
     private void removeActivity(Activity activity) {
         mActivities.remove(activity);
     }
 
     /**
-     * 销毁所有Activity
+     * 销毁所有 Activity
      */
     public void removeAllActivities() {
         for (Activity activity : mActivities) {

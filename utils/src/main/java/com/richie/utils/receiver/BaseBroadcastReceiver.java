@@ -11,11 +11,11 @@ import android.util.Log;
  * @author Richie on 2017.11.16
  */
 public abstract class BaseBroadcastReceiver extends BroadcastReceiver {
+    private static final String TAG = "BaseBroadcastReceiver";
     /**
      * 处理广播事件的最长时长
      */
     private static final int HANDLE_RECEIVE_TIME = 1000;
-    private static final String TAG = "BaseBroadcastReceiver";
 
     @Override
     public final void onReceive(Context context, Intent intent) {

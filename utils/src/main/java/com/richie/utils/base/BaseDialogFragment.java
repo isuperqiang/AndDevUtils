@@ -1,5 +1,6 @@
 package com.richie.utils.base;
 
+import android.app.Dialog;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
@@ -22,7 +23,7 @@ public abstract class BaseDialogFragment extends DialogFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(getLayoutResID(), container, false);
+        View view = inflater.inflate(getLayoutResId(), container, false);
         initWindowParams();
         initView(view);
         return view;
@@ -34,15 +35,10 @@ public abstract class BaseDialogFragment extends DialogFragment {
         initData();
     }
 
-    @Override
-    public final void onDestroyView() {
-        super.onDestroyView();
-        release();
-    }
-
     private void initWindowParams() {
-        getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
-        Window window = getDialog().getWindow();
+        Dialog dialog = getDialog();
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        Window window = dialog.getWindow();
         if (window != null) {
             window.getDecorView().setPadding(0, 0, 0, 0);
             window.setBackgroundDrawableResource(android.R.color.transparent);
@@ -55,17 +51,17 @@ public abstract class BaseDialogFragment extends DialogFragment {
     }
 
     /**
-     * 获取布局 ID
+     * 获取布局资源
      *
-     * @return layout resId
+     * @return 布局 ID
      */
     @LayoutRes
-    protected abstract int getLayoutResID();
+    protected abstract int getLayoutResId();
 
     /**
      * 初始化视图
      *
-     * @param rootView
+     * @param rootView 根视图
      */
     protected void initView(View rootView) {
     }
@@ -76,9 +72,4 @@ public abstract class BaseDialogFragment extends DialogFragment {
     protected void initData() {
     }
 
-    /**
-     * 释放资源
-     */
-    protected void release() {
-    }
 }

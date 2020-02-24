@@ -25,7 +25,7 @@ public final class EventBusUtils {
     }
 
     /**
-     * 解除注册 EventBus
+     * 取消注册 EventBus
      *
      * @param subscriber
      */

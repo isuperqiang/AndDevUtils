@@ -10,6 +10,7 @@ import android.support.annotation.IntRange;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.support.v7.widget.RecyclerView;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
@@ -18,7 +19,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.richie.utils.view.OnMultiClickListener;
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * RecyclerView 通用适配器
@@ -38,9 +43,11 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<BaseRe
      * 多选
      */
     public static final int MULTI_CHOICE_MODE = 2;
-    // 单选默认选中的位置
+    /**
+     * 单选默认选中的位置
+     */
     private static final int DEFAULT_SELECTED_POSITION = Integer.MIN_VALUE;
-    // 单选上次选中的 view 位置
+    // 单选模式下，上次选中的 view 位置
     protected int mLastSelected = DEFAULT_SELECTED_POSITION;
     // 数据集
     protected List<T> mData;
@@ -48,8 +55,9 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<BaseRe
     private int mLayoutResId;
     // item 点击事件
     private OnItemClickListener<T> mOnItemClickListener;
+    // item 长按事件
     private OnItemLongClickListener<T> mOnItemLongClickListener;
-    // 选中的 view 包含的数据，子 view 可点击时无效
+    // 选中的 view 包含的数据
     private SparseArray<T> mSelectedItems;
 
     public BaseRecyclerAdapter(@NonNull List<T> data, @LayoutRes int layoutResId) {
@@ -61,7 +69,7 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<BaseRe
     @Override
     @NonNull
     public BaseViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        final BaseViewHolder viewHolder = BaseViewHolder.createViewHolder(parent, mLayoutResId);
+        BaseViewHolder viewHolder = BaseViewHolder.createViewHolder(parent, mLayoutResId);
         View itemView = viewHolder.getItemView();
         itemView.setOnClickListener(new InnerItemViewClickListener(viewHolder));
         itemView.setOnLongClickListener(new InnerItemLongClickListener(viewHolder));
@@ -72,7 +80,7 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<BaseRe
     public void onBindViewHolder(@NonNull BaseViewHolder viewHolder, int position) {
         T data = mData.get(position);
         bindViewHolder(viewHolder, data);
-        int choiceMode = choiceMode();
+        int choiceMode = getChoiceMode();
         if (choiceMode == SINGLE_CHOICE_MODE) {
             handleSelectedState(viewHolder, data, position == mLastSelected);
         } else if (choiceMode == MULTI_CHOICE_MODE) {
@@ -96,17 +104,17 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<BaseRe
     }
 
     /**
-     * 设定元素选择的模式，默认单选
+     * Item 选中模式，默认单选
      *
      * @return
      */
     protected @ChoiceMode
-    int choiceMode() {
+    int getChoiceMode() {
         return SINGLE_CHOICE_MODE;
     }
 
     /**
-     * 处理选中元素的状态
+     * 处理 Item 选中状态
      *
      * @param viewHolder
      * @param data
@@ -125,7 +133,7 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<BaseRe
     protected abstract void bindViewHolder(BaseViewHolder viewHolder, T item);
 
     /**
-     * Item 点击事件监听器
+     * 设置 Item 点击事件监听器
      *
      * @param onItemClickListener
      */
@@ -134,7 +142,7 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<BaseRe
     }
 
     /**
-     * Item 长按事件监听器
+     * 设置 Item 长按事件监听器
      *
      * @param onItemLongClickListener
      */
@@ -143,7 +151,7 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<BaseRe
     }
 
     /**
-     * 设置某个选项选中
+     * 设置某个元素选中
      *
      * @param data
      */
@@ -154,32 +162,39 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<BaseRe
             mSelectedItems.put(mLastSelected, data);
             notifyItemChanged(mLastSelected);
         }
-        if (lastSelected != mLastSelected) {
-            mSelectedItems.remove(lastSelected);
-        }
         if (lastSelected >= 0) {
+            if (lastSelected != mLastSelected) {
+                mSelectedItems.remove(lastSelected);
+            }
             notifyItemChanged(lastSelected);
         }
     }
 
     /**
-     * 设置某个选项选中
+     * 设置某个元素选中
      *
      * @param pos
      */
     public void setItemSelected(@IntRange(from = 0) int pos) {
         if (isValidPosition(pos)) {
-            setItemSelected(mData.get(pos));
+            mSelectedItems.put(pos, mData.get(pos));
+            notifyItemChanged(pos);
+            if (mLastSelected >= 0) {
+                if (pos != mLastSelected) {
+                    mSelectedItems.remove(mLastSelected);
+                }
+                notifyItemChanged(mLastSelected);
+            }
         }
     }
 
     /**
-     * 设置某些选项选中
+     * 设置某些元素选中
      *
      * @param data
      */
     public void setItemsSelected(@NonNull List<T> data) {
-        if (data.size() > 0) {
+        if (getChoiceMode() == MULTI_CHOICE_MODE) {
             for (T datum : data) {
                 setItemSelected(datum);
             }
@@ -187,14 +202,13 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<BaseRe
     }
 
     /**
-     * 多选状态，设置全部选中状态
+     * 多选状态，设置全部选中元素
      */
     public void setAllItemSelected() {
-        if (choiceMode() == MULTI_CHOICE_MODE) {
-            for (T item : mData) {
-                int index = indexOf(item);
-                mSelectedItems.put(index, item);
-                notifyItemChanged(index);
+        if (getChoiceMode() == MULTI_CHOICE_MODE) {
+            for (int i = 0, size = mData.size(); i < size; i++) {
+                mSelectedItems.put(i, mData.get(i));
+                notifyItemChanged(i);
             }
         }
     }
@@ -214,8 +228,7 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<BaseRe
      * 清除多选状态
      */
     public void clearMultiItemSelected() {
-        int size = mSelectedItems.size();
-        for (int i = 0; i < size; i++) {
+        for (int i = 0, size = mSelectedItems.size(); i < size; i++) {
             T t = mSelectedItems.valueAt(i);
             int index = indexOf(t);
             if (index >= 0) {
@@ -230,8 +243,20 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<BaseRe
      */
     public void add(@NonNull T data) {
         mData.add(data);
-        int index = indexOf(data);
-        notifyItemInserted(index);
+        notifyItemInserted(mData.size() - 1);
+    }
+
+    /**
+     * 向某个位置添加一个元素
+     *
+     * @param position
+     * @param data
+     */
+    public void add(@IntRange(from = 0) int position, @NonNull T data) {
+        if(isValidPosition(position)) {
+            mData.add(position, data);
+            notifyItemInserted(position);
+        }
     }
 
     /**
@@ -257,17 +282,6 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<BaseRe
     }
 
     /**
-     * 向某个位置，添加一个元素
-     *
-     * @param position
-     * @param data
-     */
-    public void add(@IntRange(from = 0) int position, @NonNull T data) {
-        mData.add(position, data);
-        notifyItemInserted(position);
-    }
-
-    /**
      * 更新元素
      *
      * @param data
@@ -284,26 +298,19 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<BaseRe
     }
 
     /**
-     * 清空所有元素
-     */
-    public void removeAll() {
-        mData.clear();
-        mSelectedItems.clear();
-        notifyDataSetChanged();
-    }
-
-    /**
      * 更新特定位置的元素
      *
      * @param position
      * @param data
      */
     public void update(@IntRange(from = 0) int position, @NonNull T data) {
-        mData.set(position, data);
-        if (mSelectedItems.get(position) != null) {
-            mSelectedItems.put(position, data);
+        if (isValidPosition(position)) {
+            mData.set(position, data);
+            if (mSelectedItems.get(position) != null) {
+                mSelectedItems.put(position, data);
+            }
+            notifyItemChanged(position);
         }
-        notifyItemChanged(position);
     }
 
     /**
@@ -313,7 +320,7 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<BaseRe
      */
     public void remove(@NonNull T data) {
         int index = indexOf(data);
-        if (isValidPosition(index)) {
+        if (index >= 0) {
             mSelectedItems.remove(index);
             mData.remove(index);
             notifyItemRemoved(index);
@@ -333,6 +340,20 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<BaseRe
         }
     }
 
+    /**
+     * 移除所有元素
+     */
+    public void removeAll() {
+        mData.clear();
+        mSelectedItems.clear();
+        notifyDataSetChanged();
+    }
+
+    /**
+     * 是否所有元素都选中
+     *
+     * @return
+     */
     public boolean isAllItemSelected() {
         return mSelectedItems.size() == mData.size();
     }
@@ -390,11 +411,11 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<BaseRe
     }
 
     public static class BaseViewHolder extends RecyclerView.ViewHolder {
-        private SparseArray<View> mViews;
+        private Map<Integer, View> mViews;
 
         private BaseViewHolder(View itemView) {
             super(itemView);
-            mViews = new SparseArray<>();
+            mViews = new HashMap<>(16);
         }
 
         static BaseViewHolder createViewHolder(ViewGroup parent, int layoutResId) {
@@ -408,25 +429,25 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<BaseRe
         }
 
         /**
-         * 通过viewId获取控件
+         * 根据 Id 获取控件
          *
-         * @param viewId
+         * @param id
          * @return
          */
         @SuppressWarnings("unchecked")
-        public <T extends View> T getViewById(@IdRes int viewId) {
-            View view = mViews.get(viewId);
+        public <T extends View> T getViewById(@IdRes int id) {
+            View view = mViews.get(id);
             if (view == null) {
-                view = itemView.findViewById(viewId);
-                mViews.put(viewId, view);
+                view = itemView.findViewById(id);
+                mViews.put(id, view);
             }
             return (T) view;
         }
 
-        /*----以下为辅助方法----*/
+        /*----------------以下为辅助方法----------------*/
 
         /**
-         * 设置 Item 布局的选中状态
+         * 设置 View 的选中状态
          *
          * @param selected
          * @return
@@ -437,7 +458,7 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<BaseRe
         }
 
         /**
-         * 设置文字
+         * 为 TextView 设置文字
          */
         public BaseViewHolder setText(@IdRes int id, String text) {
             View view = getViewById(id);
@@ -448,7 +469,18 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<BaseRe
         }
 
         /**
-         * ImageView 设置图片 Bitmap
+         * 为 TextView 设置文字
+         */
+        public BaseViewHolder setText(@IdRes int viewId, @StringRes int strId) {
+            View view = getViewById(viewId);
+            if (view instanceof TextView) {
+                ((TextView) view).setText(strId);
+            }
+            return this;
+        }
+
+        /**
+         * 为 ImageView 设置图片 Bitmap
          *
          * @param id
          * @param bitmap
@@ -463,7 +495,7 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<BaseRe
         }
 
         /**
-         * ImageView 设置图片 res
+         * 为 ImageView 设置图片 res
          *
          * @param id
          * @param drawable
@@ -478,7 +510,7 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<BaseRe
         }
 
         /**
-         * ImageView 设置图片 drawable
+         * 为 ImageView 设置图片 drawable
          *
          * @param id
          * @param drawable
@@ -513,7 +545,7 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<BaseRe
          */
         public BaseViewHolder setVisibility(@IdRes int id, int visible) {
             View view = getViewById(id);
-            if (view != null && view.getVisibility() != visible) {
+            if (view.getVisibility() != visible) {
                 view.setVisibility(visible);
             }
             return this;
@@ -539,8 +571,7 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<BaseRe
          * @return
          */
         public BaseViewHolder setViewSelected(@IdRes int id, boolean selected) {
-            View view = getViewById(id);
-            view.setSelected(selected);
+            getViewById(id).setSelected(selected);
             return this;
         }
 
@@ -552,28 +583,27 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<BaseRe
          * @return
          */
         public BaseViewHolder setEnabled(@IdRes int id, boolean enabled) {
-            View view = getViewById(id);
-            view.setEnabled(enabled);
+            getViewById(id).setEnabled(enabled);
             return this;
         }
 
         /**
-         * 设置 TextView 字体样式
+         * 为 TextView 设置字体样式
          *
          * @param id
-         * @param textStype
+         * @param textStyle
          * @return
          */
-        public BaseViewHolder setTextStyle(@IdRes int id, int textStype) {
+        public BaseViewHolder setTextStyle(@IdRes int id, int textStyle) {
             View view = getViewById(id);
             if (view instanceof TextView) {
-                ((TextView) view).setTypeface(null, textStype);
+                ((TextView) view).setTypeface(null, textStyle);
             }
             return this;
         }
 
         /**
-         * 设置 TextView 字体颜色
+         * 为 TextView 设置字体颜色
          *
          * @return
          */
@@ -593,15 +623,17 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<BaseRe
          * @return
          */
         public BaseViewHolder setBackground(@IdRes int id, @DrawableRes int drawable) {
-            View view = getViewById(id);
-            view.setBackgroundResource(drawable);
+            getViewById(id).setBackgroundResource(drawable);
             return this;
         }
 
-        //其他方法可自行扩展
+        // 其他方法可自行扩展
 
     }
 
+    /**
+     * Item 长按事件监听器
+     */
     private class InnerItemLongClickListener implements View.OnLongClickListener {
         private BaseViewHolder mViewHolder;
 
@@ -622,7 +654,7 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<BaseRe
     /**
      * Item 点击事件监听器
      */
-    private class InnerItemViewClickListener implements View.OnClickListener {
+    private class InnerItemViewClickListener extends OnMultiClickListener {
         private BaseViewHolder mViewHolder;
 
         InnerItemViewClickListener(BaseViewHolder viewHolder) {
@@ -630,19 +662,19 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<BaseRe
         }
 
         @Override
-        public void onClick(View view) {
+        protected void onMultiClick(View view) {
             int position = mViewHolder.getAdapterPosition();
             if (position < 0) {
                 return;
             }
-            int choiceMode = choiceMode();
+            int choiceMode = getChoiceMode();
             T selectedData = getItem(position);
             if (choiceMode == SINGLE_CHOICE_MODE) {
                 mSelectedItems.put(position, selectedData);
-                if (isValidPosition(mLastSelected) && mLastSelected != position) {
-                    mSelectedItems.remove(mLastSelected);
-                }
                 if (mLastSelected >= 0) {
+                    if (mLastSelected != position) {
+                        mSelectedItems.remove(mLastSelected);
+                    }
                     notifyItemChanged(mLastSelected);
                 }
                 notifyItemChanged(position);

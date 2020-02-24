@@ -9,13 +9,12 @@ import android.os.Build;
 import android.provider.Settings;
 
 /**
- * author : Android 轮子哥
+ * @author : Android 轮子哥
  * github : https://github.com/getActivity/XXPermissions
  * time   : 2018/07/18
  * desc   : 权限设置页（支持大部分国产手机）
  */
 public final class PermissionSettingPage {
-
     private static final String MARK = Build.MANUFACTURER.toLowerCase();
 
     /**

@@ -8,10 +8,9 @@ import android.view.View;
  * @author Richie on 2018.11.09
  */
 public abstract class OnMultiClickListener implements View.OnClickListener {
-
+    private static final int MIN_CLICK_DELAY_TIME = 500;
     private long mLastClickTime;
     private int mViewId = View.NO_ID;
-    private static final int MIN_CLICK_DELAY_TIME = 500;
 
     /**
      * 处理后的点击事件

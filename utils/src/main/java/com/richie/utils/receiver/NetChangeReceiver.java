@@ -7,18 +7,19 @@ import android.net.NetworkInfo;
 import android.util.Log;
 
 /**
- * 网络变化接收器，为每个 Activity 注册，在网络变化的时候通知用户
+ * 网络状态变化接收器，为每个 Activity 注册，在网络状态发生变化的时候通知
  *
  * @author Richie on 2017.11.28
  */
+// TODO: 2020-02-24 refactor
 public final class NetChangeReceiver extends BaseBroadcastReceiver {
+    private static final String TAG = "NetChangeReceiver";
     /**
      * 最小触发时间, 避免多次回调
      */
     private static final int MIN_TRIGGER_TIME = 1000;
     private long mLastTime = System.currentTimeMillis();
     private OnNetChangedListener mOnNetChangedListener;
-    private static final String TAG = "NetChangeReceiver";
 
     @Override
     protected void doReceive(Context context, Intent intent) {
@@ -67,9 +68,9 @@ public final class NetChangeReceiver extends BaseBroadcastReceiver {
         /**
          * 网络状态变化
          *
-         * @param connected
+         * @param isConnected
          */
-        void onNetChanged(boolean connected);
+        void onNetChanged(boolean isConnected);
     }
 
 }

@@ -8,6 +8,8 @@ import com.richie.utils.greendao.generated.DaoMaster;
 import com.richie.utils.greendao.generated.DaoSession;
 
 /**
+ * GreenDAO 封装
+ *
  * @author Richie on 2019.01.06
  */
 public final class GreenDaoUtil {

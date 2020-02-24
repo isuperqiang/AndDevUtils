@@ -12,12 +12,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 /**
- * 分割线装饰器
+ * RecyclerView 分割线装饰器
  *
  * @author Richie on 2018.01.10
  */
 public class DividerItemDecoration extends RecyclerView.ItemDecoration {
-
     public static final int HORIZONTAL_LIST = LinearLayoutManager.HORIZONTAL;
     public static final int VERTICAL_LIST = LinearLayoutManager.VERTICAL;
     private static final int[] ATTRS = new int[]{android.R.attr.listDivider};
@@ -25,7 +24,7 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
     /**
      * 显示在底部
      */
-    private boolean mDrawBottom = true;
+    private boolean mDrawBottom;
     /**
      * 边距
      */
@@ -34,7 +33,9 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
      * 画笔
      */
     private Paint mPaint;
-
+    /**
+     * 方向
+     */
     private int mOrientation;
 
     public DividerItemDecoration(Context context, int orientation, int margin, int color, boolean drawBottom) {

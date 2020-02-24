@@ -67,7 +67,7 @@ public class RecyclerViewEmptySupport extends RecyclerView {
     }
 
     /**
-     * 设置空白视图，view 需要在 Rv 的父布局中
+     * 设置空白视图，view 需要在 RecyclerView 的父布局中
      *
      * @param emptyView
      */
@@ -83,4 +83,5 @@ public class RecyclerViewEmptySupport extends RecyclerView {
         }
         mAdapterDataObserver.onChanged();
     }
+
 }

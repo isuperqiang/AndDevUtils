@@ -13,10 +13,9 @@ import android.view.View;
  * @author Richie on 2017.10.20
  */
 public class SpaceItemDecoration extends RecyclerView.ItemDecoration {
-
     private int verticalSpace;
     private int horizontalSpace;
-    // 首尾额外的边距
+    /* 首尾额外的边距 */
     private int additionalLT;
     private int additionalRB;
 

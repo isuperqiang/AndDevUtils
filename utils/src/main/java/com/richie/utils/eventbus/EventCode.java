@@ -8,4 +8,5 @@ package com.richie.utils.eventbus;
 public class EventCode {
     private static final int EVENT_ONE = 78;
     private static final int EVENT_TWO = 45;
+    // etc...
 }

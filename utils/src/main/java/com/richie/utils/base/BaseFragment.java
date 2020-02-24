@@ -28,7 +28,7 @@ public abstract class BaseFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        int layoutResId = getLayoutResID();
+        int layoutResId = getLayoutResId();
         View rootView = inflater.inflate(layoutResId, container, false);
         initView(rootView);
         return rootView;
@@ -47,17 +47,17 @@ public abstract class BaseFragment extends Fragment {
     }
 
     /**
-     * 获取布局
+     * 获取布局资源
      *
-     * @return layout resId
+     * @return 布局 ID
      */
     @LayoutRes
-    protected abstract int getLayoutResID();
+    protected abstract int getLayoutResId();
 
     /**
      * 初始化视图
      *
-     * @param rootView
+     * @param rootView 根视图
      */
     protected void initView(View rootView) {
     }

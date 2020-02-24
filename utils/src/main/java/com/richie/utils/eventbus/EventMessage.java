@@ -6,7 +6,6 @@ package com.richie.utils.eventbus;
  * @author Richie on 2017.10.03
  */
 public class EventMessage<T> {
-
     private int code;
     private T data;
 
