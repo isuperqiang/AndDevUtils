@@ -3,11 +3,12 @@ package com.richie.utils.view.select;
 import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
+
+import androidx.annotation.Nullable;
 
 import com.richie.utils.common.ViewUtils;
 

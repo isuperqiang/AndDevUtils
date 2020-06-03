@@ -5,13 +5,14 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.support.annotation.StringRes;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.Window;
 import android.widget.CompoundButton;
 import android.widget.TextView;
+
+import androidx.annotation.StringRes;
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * @author Richie on 2017.10.12

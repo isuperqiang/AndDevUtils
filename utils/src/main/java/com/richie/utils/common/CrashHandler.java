@@ -3,9 +3,10 @@ package com.richie.utils.common;
 import android.app.Application;
 import android.content.Context;
 import android.os.Build;
-import android.support.annotation.NonNull;
 import android.util.Log;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 
 import com.richie.utils.BuildConfig;
 import com.richie.utils.listener.ActivityCallback;

@@ -2,7 +2,8 @@ package com.richie.utils.greendao;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
-import android.support.annotation.NonNull;
+
+import androidx.annotation.NonNull;
 
 import com.richie.utils.greendao.generated.DaoMaster;
 import com.richie.utils.greendao.generated.DaoSession;
