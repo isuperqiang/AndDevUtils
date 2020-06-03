@@ -3,9 +3,6 @@ package cn.richie.anddevutil;
 import android.app.Application;
 import android.content.Context;
 
-import com.richie.easylog.LoggerConfig;
-import com.richie.easylog.LoggerFactory;
-
 import me.jessyan.autosize.AutoSizeConfig;
 
 /**
@@ -24,9 +21,5 @@ public class OneApp extends Application {
         sContext = this;
         boolean debug = BuildConfig.DEBUG;
         AutoSizeConfig.getInstance().setLog(debug);
-        LoggerFactory.init(new LoggerConfig.Builder()
-                .context(this)
-                .logcatEnabled(debug)
-                .build());
     }
 }
