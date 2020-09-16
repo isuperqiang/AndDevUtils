@@ -28,7 +28,7 @@ greendao {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
-    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
     // 事件总线：https://github.com/greenrobot/EventBus
     implementation 'org.greenrobot:eventbus:3.2.0'
