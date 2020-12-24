@@ -29,7 +29,7 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar', '*.aar'], dir: 'libs')
     implementation 'androidx.appcompat:appcompat:1.2.0'
-    implementation "androidx.constraintlayout:constraintlayout:2.0.1"
+    implementation "androidx.constraintlayout:constraintlayout:2.0.4"
     testImplementation 'junit:junit:4.13'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
@@ -37,5 +37,7 @@ dependencies {
     // 屏幕适配：https://github.com/JessYanCoding/AndroidAutoSize
     implementation 'me.jessyan:autosize:1.2.1'
     // Android 日志：https://github.com/isuperqiang/AndEasyLog
-    implementation 'com.github.isuperqiang:AndEasyLog:1.9.0'
+    implementation 'com.github.isuperqiang:AndEasyLog:2.0.0'
+    // 检测内存泄漏
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.5'
 }
